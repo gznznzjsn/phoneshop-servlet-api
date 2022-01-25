@@ -33,6 +33,13 @@ public class ArrayListProductDaoTest
         MockitoAnnotations.initMocks(this);
         productDao = new ArrayListProductDao();
         usd = Currency.getInstance("USD");
+
+        given(lastProduct.getId()).willReturn(100L);
+        given(lastProduct.getPrice()).willReturn(BigDecimal.valueOf(100));
+        given(lastProduct.getStock()).willReturn(1);
+
+        given(product.getPrice()).willReturn(BigDecimal.valueOf(100));
+        given(product.getStock()).willReturn(1);
     }
 
     @Test
@@ -67,15 +74,15 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testSaveProductWithTooBigId() throws ProductNotFoundException {
-        Product product = new Product(100L,"test-product", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        productDao.save(product);
-        assertNotEquals(14, productDao.findProducts().size());
-        assertEquals(productDao.findProducts().size() - 1,productDao.findProducts().indexOf(product));
+        int prevSize = productDao.findProducts().size();
+        productDao.save(lastProduct);
+        int curSize = productDao.findProducts().size();
+        assertEquals(prevSize + 1, curSize);
+        assertEquals(productDao.findProducts().get(curSize - 1),lastProduct);
     }
 
     @Test
     public void testSaveProductWithLessThanMaxIdFound() throws ProductNotFoundException{
-        given(lastProduct.getId()).willReturn(100L);
         productDao.save(lastProduct);
 
         given(product.getId()).willReturn(5L);
@@ -86,14 +93,9 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testSaveProductWithLessThanMaxIdNotFound() throws ProductNotFoundException {
-        given(lastProduct.getId()).willReturn(100L);
-        given(lastProduct.getPrice()).willReturn(BigDecimal.valueOf(100));
-        given(lastProduct.getStock()).willReturn(1);
         productDao.save(lastProduct);
 
         given(product.getId()).willReturn(98L);
-        given(product.getPrice()).willReturn(BigDecimal.valueOf(100));
-        given(product.getStock()).willReturn(1);
         productDao.save(product);
 
         int index100 = productDao.findProducts().indexOf(lastProduct);
