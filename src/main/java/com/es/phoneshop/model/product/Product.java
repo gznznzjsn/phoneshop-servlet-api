@@ -34,7 +34,7 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-    }
+}
 
     public Long getId() {
         return id;
