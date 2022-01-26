@@ -1,14 +1,19 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao.impl;
+
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.Product;
+import com.es.phoneshop.exception.ProductNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
+    private static final ReadWriteLock lock = new ReentrantReadWriteLock(true);
     private long maxId;
     private final List<Product> products;
 
@@ -20,13 +25,16 @@ public class ArrayListProductDao implements ProductDao {
 
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFoundException{
+    public Product getProduct(Long id) throws ProductNotFoundException {
         lock.readLock().lock();
         try {
+            if (id == null) {
+                throw new ProductNotFoundException("Null id");
+            }
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findAny()
-                    .orElseThrow(ProductNotFoundException::new);
+                    .orElseThrow(() -> new ProductNotFoundException("No product with this id"));
         } finally {
             lock.readLock().unlock();
         }
@@ -45,11 +53,11 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private boolean isPriced(Product product){
+    private boolean isPriced(Product product) {
         return product.getPrice() != null;
     }
 
-    private boolean isInStock(Product product){
+    private boolean isInStock(Product product) {
         return product.getStock() > 0;
     }
 
@@ -57,46 +65,15 @@ public class ArrayListProductDao implements ProductDao {
     public void save(Product product) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
-            if(product.getId() == null ) {
+            if (product.getId() == null) {
                 product.setId(++maxId);
                 products.add(product);
-            }else{
-                long id = product.getId();
-                if(id > maxId){
-                    maxId = id;
-                    products.add(product);
-                }else if(isThereAnyProductWithId(id)){
-                    int sameIdIndex = products.indexOf(getProduct(id));
-                    products.set(sameIdIndex,product);
-                }else{
-                    products.add(getIndexForInsertion(id),product);
-                }
+            } else {
+                int sameIdIndex = products.indexOf(getProduct(product.getId()));
+                products.set(sameIdIndex,product);
             }
         } finally {
             lock.writeLock().unlock();
-        }
-    }
-
-    private boolean isThereAnyProductWithId(Long id){
-        lock.readLock().lock();
-        try{
-            return products.stream()
-                    .anyMatch(product -> id.equals(product.getId()));
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    private int getIndexForInsertion(Long id) throws ProductNotFoundException {
-        lock.readLock().lock();
-        try{
-            Product productToShift =  products.stream()
-                    .filter(product -> id.compareTo(product.getId())<=0)
-                    .findFirst()
-                    .orElseThrow(ProductNotFoundException::new);
-            return products.indexOf(productToShift);
-        } finally {
-            lock.readLock().unlock();
         }
     }
 
@@ -104,8 +81,8 @@ public class ArrayListProductDao implements ProductDao {
     public void delete(Long id) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
-            products.remove(getProduct(id));
-            if(id == maxId){
+            products.removeIf(product -> product.getId().equals(id));
+            if (id == maxId) {
                 maxId = products.get(products.size()-1).getId();
             }
         } finally {
@@ -113,10 +90,8 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private void saveSampleProducts(){
+    private void saveSampleProducts() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
-        lock.writeLock().lock();
-        try {
             save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
             save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
             save(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
@@ -130,10 +105,5 @@ public class ArrayListProductDao implements ProductDao {
             save(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
             save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
             save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-        }catch (ProductNotFoundException ex){
-            ex.printStackTrace();
-        } finally {
-            lock.writeLock().unlock();
-        }
     }
 }

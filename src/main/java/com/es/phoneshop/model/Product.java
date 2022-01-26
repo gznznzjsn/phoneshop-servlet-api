@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -27,7 +27,7 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Product( String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
         this.description = description;
         this.price = price;
