@@ -1,7 +1,6 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 import org.junit.Before;
@@ -32,7 +31,7 @@ public class ArrayListProductDaoTest
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
         usd = Currency.getInstance("USD");
 
         given(product.getId()).willReturn(100L);
@@ -64,7 +63,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts("",SortField.description,SortOrder.asc).isEmpty());
     }
 
     @Test
@@ -105,9 +104,9 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testDeleteInvalidProduct() throws ProductNotFoundException{
-        int prevSize = productDao.findProducts().size();
+        int prevSize = productDao.findProducts("",SortField.description,SortOrder.asc).size();
         productDao.delete(100L);
-        int curSize = productDao.findProducts().size();
+        int curSize = productDao.findProducts("",SortField.description,SortOrder.asc).size();
         assertEquals(prevSize,curSize);
     }
 
