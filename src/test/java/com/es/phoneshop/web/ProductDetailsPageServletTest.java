@@ -1,5 +1,8 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+
+import com.es.phoneshop.model.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +20,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -27,7 +30,7 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
 
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
+    private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
     public void setup() throws ServletException {
@@ -37,15 +40,15 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        ArrayListProductDao.getInstance().save(new Product());
+
+        when(request.getPathInfo()).thenReturn("/1");
 
         servlet.doGet(request, response);
 
-        verify(request).getParameter("query");
-        verify(request).getParameter("sort");
-        verify(request).getParameter("order");
 
-        verify(request).setAttribute(eq("products"),anyList());
-
+        verify(request).getPathInfo();
+        verify(request).setAttribute(eq("product"),any(Product.class));
         verify(request).getRequestDispatcher(anyString());
         verify(requestDispatcher).forward(request, response);
     }

@@ -6,6 +6,7 @@
   <title>${pageTitle}</title>
   <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
+  <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/popUpStyle.css">
 </head>
 <body class="product-list">
   <header>
@@ -22,5 +23,6 @@
         (c) Expert-Soft
     </p>
   </footer>
+    <script src="${pageContext.servletContext.contextPath}/scripts/showHistory.js"></script>
 </body>
 </html>

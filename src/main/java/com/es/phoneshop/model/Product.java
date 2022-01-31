@@ -1,6 +1,7 @@
 package com.es.phoneshop.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 public class Product {
@@ -14,9 +15,7 @@ public class Product {
     private int stock;
     private String imageUrl;
 
-    private Map<Calendar, BigDecimal> priceHistory; //изменить setprice
-
-
+    private List<PriceHistoryBin> priceHistory;
 
     public Product() {
     }
@@ -25,6 +24,7 @@ public class Product {
         this.id = id;
         this.code = code;
         this.description = description;
+        priceHistory = new ArrayList<>();
         setPrice(price);
         this.currency = currency;
         this.stock = stock;
@@ -34,6 +34,7 @@ public class Product {
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
         this.description = description;
+        priceHistory = new ArrayList<>();
         setPrice(price);
         this.currency = currency;
         this.stock = stock;
@@ -69,8 +70,8 @@ public class Product {
     }
 
     public void setPrice(BigDecimal price) {
-        priceHistory.put(GregorianCalendar.getInstance(),price);
         this.price = price;
+        priceHistory.add(new PriceHistoryBin(LocalDate.now(),this.price));
     }
 
     public Currency getCurrency() {
@@ -97,7 +98,7 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Map<Calendar, BigDecimal> getPriceHistory(){
+    public List<PriceHistoryBin> getPriceHistory(){
         return priceHistory;
     }
 }
