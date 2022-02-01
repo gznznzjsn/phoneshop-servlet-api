@@ -48,7 +48,7 @@ public class ProductDetailsPageServletTest {
 
 
         verify(request).getPathInfo();
-        verify(request).setAttribute(eq("product"),any(Product.class));
+        verify(request).setAttribute(eq("product"), any(Product.class));
         verify(request).getRequestDispatcher(anyString());
         verify(requestDispatcher).forward(request, response);
     }

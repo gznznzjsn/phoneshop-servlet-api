@@ -44,7 +44,7 @@ public class ProductListPageServletTest {
         verify(request).getParameter("sort");
         verify(request).getParameter("order");
 
-        verify(request).setAttribute(eq("products"),anyList());
+        verify(request).setAttribute(eq("products"), anyList());
 
         verify(request).getRequestDispatcher(anyString());
         verify(requestDispatcher).forward(request, response);

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
     private static ProductDao instance;
 
-    public static synchronized ProductDao getInstance(){
+    public static synchronized ProductDao getInstance() {
         if (instance == null) {
             instance = new ArrayListProductDao();
         }
@@ -41,31 +41,31 @@ public class ArrayListProductDao implements ProductDao {
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException(id,"No product with this id"));
+                    .orElseThrow(() -> new ProductNotFoundException(id, "No product with this id"));
         } finally {
             lock.readLock().unlock();
         }
     }
 
     @Override
-    public List<Product> findProducts(String query,SortField sortField,SortOrder sortOrder) {
+    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         lock.readLock().lock();
         try {
-                String[] words = query == null ? new String[0] : query.split(" ");
+            String[] words = query == null ? new String[0] : query.split(" ");
 
             return products.stream()
-                    .filter(product -> (query == null || query.isEmpty() || containsAllWords(product,words)))
+                    .filter(product -> (query == null || query.isEmpty() || containsAllWords(product, words)))
                     .filter(this::isPriced)
                     .filter(this::isInStock)
-                    .sorted(comparator(sortField,sortOrder))
+                    .sorted(comparator(sortField, sortOrder))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
         }
     }
 
-    private boolean containsAllWords(Product product, String[] words){
-        for(String word : words){
+    private boolean containsAllWords(Product product, String[] words) {
+        for (String word : words) {
             if (!product.getDescription().contains(word)) {
                 return false;
             }
@@ -108,7 +108,7 @@ public class ArrayListProductDao implements ProductDao {
                 products.add(product);
             } else {
                 int sameIdIndex = products.indexOf(getProduct(product.getId()));
-                products.set(sameIdIndex,product);
+                products.set(sameIdIndex, product);
             }
         } finally {
             lock.writeLock().unlock();
@@ -116,12 +116,12 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(Long id) throws ProductNotFoundException {
+    public void delete(Long id) {
         lock.writeLock().lock();
         try {
             products.removeIf(product -> product.getId().equals(id));
             if (id == maxId) {
-                maxId = products.get(products.size()-1).getId();
+                maxId = products.get(products.size() - 1).getId();
             }
         } finally {
             lock.writeLock().unlock();
