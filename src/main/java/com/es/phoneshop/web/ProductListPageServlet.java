@@ -2,8 +2,8 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.impl.SortField;
-import com.es.phoneshop.dao.impl.SortOrder;
+import com.es.phoneshop.dao.enums.SortField;
+import com.es.phoneshop.dao.enums.SortOrder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

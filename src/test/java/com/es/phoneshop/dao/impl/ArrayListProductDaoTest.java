@@ -1,6 +1,8 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.enums.SortField;
+import com.es.phoneshop.dao.enums.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 import org.junit.Before;
@@ -9,7 +11,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
@@ -77,7 +78,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts("", SortField.description, SortOrder.asc).isEmpty());
+        assertFalse(productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).isEmpty());
     }
 
     @Test
@@ -118,9 +119,9 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testDeleteInvalidProduct() throws ProductNotFoundException {
-        int prevSize = productDao.findProducts("", SortField.description, SortOrder.asc).size();
+        int prevSize = productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).size();
         productDao.delete(100L);
-        int curSize = productDao.findProducts("", SortField.description, SortOrder.asc).size();
+        int curSize = productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).size();
         assertEquals(prevSize, curSize);
     }
 

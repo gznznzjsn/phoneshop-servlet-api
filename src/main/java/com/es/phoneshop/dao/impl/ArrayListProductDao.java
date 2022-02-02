@@ -1,12 +1,15 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.enums.SortField;
+import com.es.phoneshop.dao.enums.SortOrder;
 import com.es.phoneshop.model.Product;
 import com.es.phoneshop.exception.ProductNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -14,9 +17,13 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
     private static ProductDao instance;
 
-    public static synchronized ProductDao getInstance() {
+    public static ProductDao getInstance() {
         if (instance == null) {
-            instance = new ArrayListProductDao();
+            synchronized (ArrayListProductDao.class){
+                if (instance == null){
+                    instance = new ArrayListProductDao();
+                }
+            }
         }
         return instance;
     }
@@ -66,7 +73,7 @@ public class ArrayListProductDao implements ProductDao {
 
     private boolean containsAllWords(Product product, String[] words) {
         for (String word : words) {
-            if (!product.getDescription().contains(word)) {
+            if (!product.getDescription().toLowerCase(Locale.ROOT).contains(word.toLowerCase(Locale.ROOT))) {
                 return false;
             }
         }
@@ -87,13 +94,13 @@ public class ArrayListProductDao implements ProductDao {
         }
 
         Comparator<Product> comparator;
-        if (SortField.description == sortField) {
+        if (SortField.DESCRIPTION == sortField) {
             comparator = Comparator.comparing(Product::getDescription);
         } else {
             comparator = Comparator.comparing(Product::getPrice);
         }
 
-        if (sortOrder == SortOrder.desc) {
+        if (sortOrder == SortOrder.DESC) {
             comparator = comparator.reversed();
         }
         return comparator;
