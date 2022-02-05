@@ -2,6 +2,7 @@
 <%@ attribute name="pageTitle" required="true" %>
       <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
+
 <html>
 <head>
   <title>${pageTitle}</title>
@@ -13,8 +14,9 @@
   <tags:header pageTitle="${pageTitle}" />
   <main>
     <jsp:doBody/>
+
   </main>
-  <tags:footer />
+  <tags:footer/>
     <script src="${pageContext.servletContext.contextPath}/scripts/showHistory.js"></script>
 </body>
 </html>

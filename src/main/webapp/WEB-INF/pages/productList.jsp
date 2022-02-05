@@ -37,9 +37,26 @@
                   <a href="${pageContext.servletContext.contextPath}/products/${product.id}"> ${product.description}</a>
                 </td>
                 <td class="price">
-                  <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}" />
+                  <fmt:formatNumber value="${product.price}" type="currency"
+                    currencySymbol="${product.currency.symbol}" />
                 </td>
               </tr>
             </c:forEach>
           </table>
+
+          <jsp:useBean id="viewedProducts" type="java.util.ArrayList" scope="request" />
+          <table>
+            <c:forEach var="viewedProduct" items="${viewedProducts}">
+              <td>
+                <img class="product-tile" src="${viewedProduct.imageUrl}">
+
+                <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
+                  ${viewedProduct.description}</a>
+
+                <fmt:formatNumber value="${viewedProduct.price}" type="currency"
+                  currencySymbol="${viewedProduct.currency.symbol}" />
+              </td>
+            </c:forEach>
+          </table>
+
         </tags:master>

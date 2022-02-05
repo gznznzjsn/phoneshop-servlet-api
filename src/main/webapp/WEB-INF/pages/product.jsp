@@ -3,12 +3,24 @@
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-        <jsp:useBean id="product" type="com.es.phoneshop.model.Product" scope="request" />
+        <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request" />
         <tags:master pageTitle="Product Details">
+          <p>
+            ${cart}
+          </p>
+          <c:if test="${not empty param.message}">
+            <p class="success">
+              ${param.message}
+            </p>
+          </c:if>
+          <c:if test="${not empty param.error}">
+            <p class="error">
+              ${param.error}
+            </p>
+          </c:if>
           <p>
             ${product.description}
           </p>
-
           <table>
             <tr>
               <td>Image</td>
@@ -30,45 +42,73 @@
             </tr>
             <tr>
               <td>Price</td>
-              <td>
+              <td class="price">
                 <fmt:formatNumber value="${product.price}" type="currency"
                   currencySymbol="${product.currency.symbol}" />
                 <button class="history-button">price-history</button>
 
               </td>
             </tr>
+            <tr>
+              <td>Quantity</td>
+              <td>
+                <form method="post">
+                  <input class="quantity" name="quantity" value="${not empty error ? param.quantity : 1}">
+                  <c:if test="${not empty param.error}">
+                    <span class="error">
+                      ${param.error}
+                    </span>
+                  </c:if>
+                  <button>Add to cart</button>
+                </form>
+              </td>
+            </tr>
           </table>
-          <div class="history-background">
-            <div class="price-history">
-              <h2>Price History</h2>
-              <h3>${product.description}</h3>
-              <table class="price-table">
-                <thead>
-                  <tr>
-                    <td>
-                      <strong>Start date</strong>
-                    </td>
-                    <td>
-                      <strong>Price</strong>
-                    </td>
-                  </tr>
-                </thead>
-                <c:forEach var="priceHistoryBin" items="${product.priceHistory}">
-                  <tr>
-                    <td>
-                      ${priceHistoryBin.date.dayOfMonth}.
-                      ${priceHistoryBin.date.monthValue}.
-                      ${priceHistoryBin.date.year}
 
-                    </td>
-                    <td>
-                      <fmt:formatNumber value="${priceHistoryBin.price}" type="currency"
-                        currencySymbol="${product.currency.symbol}" />
-                    </td>
-                  </tr>
-                </c:forEach>
-              </table>
+          <div class="price-history">
+            <h2>Price History</h2>
+            <h3>${product.description}</h3>
+            <table class="price-table">
+              <thead>
+                <tr>
+                  <td>
+                    <strong>Start date</strong>
+                  </td>
+                  <td>
+                    <strong>Price</strong>
+                  </td>
+                </tr>
+              </thead>
+              <c:forEach var="priceHistoryBin" items="${product.priceHistory}">
+                <tr>
+                  <td>
+                    ${priceHistoryBin.date.dayOfMonth}.
+                    ${priceHistoryBin.date.monthValue}.
+                    ${priceHistoryBin.date.year}
 
-            </div>
+                  </td>
+                  <td>
+                    <fmt:formatNumber value="${priceHistoryBin.price}" type="currency"
+                      currencySymbol="${product.currency.symbol}" />
+                  </td>
+                </tr>
+              </c:forEach>
+            </table>
+
           </div>
+          </div>
+          <jsp:useBean id="viewedProducts" type="java.util.ArrayList" scope="request" />
+          <table>
+            <c:forEach var="viewedProduct" items="${viewedProducts}">
+              <td>
+                <img class="product-tile" src="${viewedProduct.imageUrl}">
+
+                <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
+                  ${viewedProduct.description}</a>
+
+                <fmt:formatNumber value="${viewedProduct.price}" type="currency"
+                  currencySymbol="${viewedProduct.currency.symbol}" />
+              </td>
+            </c:forEach>
+          </table>
         </tags:master>
