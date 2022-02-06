@@ -43,20 +43,22 @@
               </tr>
             </c:forEach>
           </table>
-
-          <jsp:useBean id="viewedProducts" type="java.util.ArrayList" scope="request" />
-          <table>
-            <c:forEach var="viewedProduct" items="${viewedProducts}">
-              <td>
-                <img class="product-tile" src="${viewedProduct.imageUrl}">
-
-                <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
-                  ${viewedProduct.description}</a>
-
-                <fmt:formatNumber value="${viewedProduct.price}" type="currency"
-                  currencySymbol="${viewedProduct.currency.symbol}" />
-              </td>
-            </c:forEach>
-          </table>
-
+          <section class="viewed">
+            <p class="viewed-title">Recently viewed</p>
+            <div class="viewed-panel">
+              <c:forEach var="viewedProduct" items="${viewedList.viewedProducts}">
+                <div class="viewed-tile">
+                  <div class="viewed-image">
+                    <img src="${viewedProduct.imageUrl}">
+                  </div>
+                  <div class="viewed-description">
+                    <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
+                      ${viewedProduct.description}</a>
+                    <fmt:formatNumber value="${viewedProduct.price}" type="currency"
+                      currencySymbol="${viewedProduct.currency.symbol}" />
+                  </div>
+                </div>
+              </c:forEach>
+            </div>
+          </section>
         </tags:master>

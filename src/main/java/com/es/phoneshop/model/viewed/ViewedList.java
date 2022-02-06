@@ -8,37 +8,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewedList {
-    private static ViewedList instance;
     public static final int CONST_MAX_SIZE = 3;
 
-    public static ViewedList getInstance() {
-        if (instance == null) {
-            synchronized (ViewedList.class){
-                if (instance == null){
-                    instance = new ViewedList();
-                }
-            }
-        }
-        return instance;
-    }
-    private final List<Product> viewedProducts;
+    private List<Product> previouslyViewedProducts;
+    private List<Product> viewedProducts;
 
-    private ViewedList() {
+
+    public ViewedList() {
+        this.previouslyViewedProducts = new ArrayList<>();
         this.viewedProducts = new ArrayList<>();
     }
 
-    public void update(Long id){
-        Product product = ArrayListProductDao.getInstance().getProduct(id);
-        if(viewedProducts.contains(product)){
-            return;
-        }
-        if(viewedProducts.size() == CONST_MAX_SIZE){
-            viewedProducts.remove(0);
-        }
-        viewedProducts.add(product);
+    public List<Product> getPreviouslyViewedProducts() {
+        return previouslyViewedProducts;
     }
 
     public List<Product> getViewedProducts() {
         return viewedProducts;
+    }
+
+    public void setPreviouslyViewedProducts(List<Product> previouslyViewedProducts) {
+        this.previouslyViewedProducts = previouslyViewedProducts;
+    }
+
+    public void setViewedProducts(List<Product> viewedProducts) {
+        this.viewedProducts = viewedProducts;
     }
 }

@@ -65,50 +65,57 @@
             </tr>
           </table>
 
-          <div class="price-history">
-            <h2>Price History</h2>
-            <h3>${product.description}</h3>
-            <table class="price-table">
-              <thead>
-                <tr>
-                  <td>
-                    <strong>Start date</strong>
-                  </td>
-                  <td>
-                    <strong>Price</strong>
-                  </td>
-                </tr>
-              </thead>
-              <c:forEach var="priceHistoryBin" items="${product.priceHistory}">
-                <tr>
-                  <td>
-                    ${priceHistoryBin.date.dayOfMonth}.
-                    ${priceHistoryBin.date.monthValue}.
-                    ${priceHistoryBin.date.year}
+          <div class="history-background">
+            <div class="price-history">
+              <h2>Price History</h2>
+              <h3>${product.description}</h3>
+              <table class="price-table">
+                <thead>
+                  <tr>
+                    <td>
+                      <strong>Start date</strong>
+                    </td>
+                    <td>
+                      <strong>Price</strong>
+                    </td>
+                  </tr>
+                </thead>
+                <c:forEach var="priceHistoryBin" items="${product.priceHistory}">
+                  <tr>
+                    <td>
+                      ${priceHistoryBin.date.dayOfMonth}.
+                      ${priceHistoryBin.date.monthValue}.
+                      ${priceHistoryBin.date.year}
 
-                  </td>
-                  <td>
-                    <fmt:formatNumber value="${priceHistoryBin.price}" type="currency"
-                      currencySymbol="${product.currency.symbol}" />
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      <fmt:formatNumber value="${priceHistoryBin.price}" type="currency"
+                        currencySymbol="${product.currency.symbol}" />
+                    </td>
+                  </tr>
+                </c:forEach>
+              </table>
+            </div>
+          </div>
+          <section class="viewed">
+            <p class="viewed-title">Recently viewed</p>
+            <div class="viewed-panel">
+              <c:forEach var="viewedProduct" items="${viewedList.previouslyViewedProducts}">
+                <div class="viewed-tile">
+                  <div class="viewed-image">
+                    <img src="${viewedProduct.imageUrl}">
+                  </div>
+                  <div class="viewed-description">
+                    <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
+                      ${viewedProduct.description}</a>
+                    <fmt:formatNumber value="${viewedProduct.price}" type="currency"
+                      currencySymbol="${viewedProduct.currency.symbol}" />
+                  </div>
+                </div>
               </c:forEach>
-            </table>
-
-          </div>
-          </div>
-          <jsp:useBean id="viewedProducts" type="java.util.ArrayList" scope="request" />
-          <table>
-            <c:forEach var="viewedProduct" items="${viewedProducts}">
-              <td>
-                <img class="product-tile" src="${viewedProduct.imageUrl}">
-
-                <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
-                  ${viewedProduct.description}</a>
-
-                <fmt:formatNumber value="${viewedProduct.price}" type="currency"
-                  currencySymbol="${viewedProduct.currency.symbol}" />
-              </td>
-            </c:forEach>
-          </table>
+            </div>
+          </section>
+          <a class="button-products" href="${pageContext.servletContext.contextPath}/products">
+            <p>Back to products</p>
+          </a>
         </tags:master>

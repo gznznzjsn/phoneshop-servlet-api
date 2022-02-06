@@ -1,8 +1,10 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
 
-
   <footer>
+    <div class="company-info">
       <p>
-          (c) Expert-Soft
+        (c) Expert-Soft
       </p>
-    </footer>
+      <div class="company-logo"></div>
+    </div>
+  </footer>

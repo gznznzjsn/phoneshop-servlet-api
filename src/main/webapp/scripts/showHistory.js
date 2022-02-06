@@ -5,8 +5,7 @@ const popUp = document.querySelector(".price-history")
 
 showButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        popUpBack.classList.toggle("active")
-        popUp.classList.toggle("active")
+        popUpBack.classList.add("active")
 
     })
 })
@@ -14,6 +13,5 @@ showButtons.forEach(btn => {
 popUpBack.addEventListener('click', (event) => {
     if (event.target != popUp) {
         popUpBack.classList.remove("active")
-        popUp.classList.remove("active")
     }
 })
