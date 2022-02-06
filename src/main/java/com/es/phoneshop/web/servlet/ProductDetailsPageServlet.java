@@ -52,18 +52,18 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             quantity = format.parse(quantityString).intValue();
         } catch (ParseException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + id + "?error=Not a number");
+            response.sendRedirect(request.getContextPath() + "/products/" + id + "?error=Not a number" +"&prevquantity=" + quantityString);
             return;
         }
         try {
             cartService.add(cartService.getCart(request), id, quantity);
         } catch (OutOfStockException e) {
             response.sendRedirect(request.getContextPath() + "/products/" + id +
-                    "?error=Out of stock, available " + e.getStockAvailable());
+                    "?error=Out of stock, available " + e.getStockAvailable() +"&prevquantity=" + quantityString);
             return;
         }
 
-        response.sendRedirect(request.getContextPath() + "/products/" + id + "?message=Product added to cart");
+        response.sendRedirect(request.getContextPath() + "/products/" + id + "?message=Product added to cart" +"&prevquantity=" + quantityString);
     }
 
     private Long parseProductId(HttpServletRequest request) {

@@ -43,8 +43,8 @@
               </tr>
             </c:forEach>
           </table>
-          <section class="viewed">
-            <p class="viewed-title">Recently viewed</p>
+          <section class="viewed ${viewedList.anyViewed eq true ? 'active' : ''}">
+            <p class="viewed-title ${viewedList.anyViewed eq true ? 'active' : ''}">Recently viewed</p>
             <div class="viewed-panel">
               <c:forEach var="viewedProduct" items="${viewedList.viewedProducts}">
                 <div class="viewed-tile">

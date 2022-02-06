@@ -53,7 +53,7 @@
               <td>Quantity</td>
               <td>
                 <form method="post">
-                  <input class="quantity" name="quantity" value="${not empty error ? param.quantity : 1}">
+                  <input class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
                   <c:if test="${not empty param.error}">
                     <span class="error">
                       ${param.error}
@@ -97,8 +97,9 @@
               </table>
             </div>
           </div>
-          <section class="viewed">
-            <p class="viewed-title">Recently viewed</p>
+          <section class="viewed ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
+            <p class="viewed-title ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">Recently viewed
+            </p>
             <div class="viewed-panel">
               <c:forEach var="viewedProduct" items="${viewedList.previouslyViewedProducts}">
                 <div class="viewed-tile">

@@ -1,3 +1,5 @@
+
+
 body{
   position: relative;
   font-family: 'Roboto', sans-serif;
@@ -65,6 +67,7 @@ img.product-tile {
 }
 
 .viewed{
+  visibility: hidden;
   width: 100%;
   margin-top: 100px;
   background-color: aquamarine;
@@ -75,6 +78,7 @@ img.product-tile {
 }
 
 .viewed-title{
+  visibility: hidden;
   color: #2b2b2b;
   text-shadow: 1px 1px 0px #ededed, 4px 4px 0px rgba(0,0,0,0.15);
   text-align: center;
@@ -86,12 +90,12 @@ img.product-tile {
   margin-bottom: 30px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  height: 220px;
-  width: 600px;
+  justify-content: center;
 }
 
 .viewed-tile{
+  margin: 0 20px;
+  height: 200px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

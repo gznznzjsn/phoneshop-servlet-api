@@ -34,4 +34,12 @@ public class ViewedList {
     public void setViewedProducts(List<Product> viewedProducts) {
         this.viewedProducts = viewedProducts;
     }
+
+    public boolean isAnyPreviouslyViewed(){
+        return previouslyViewedProducts.size() != 0;
+    }
+
+    public boolean isAnyViewed(){
+        return viewedProducts.size() != 0;
+    }
 }
