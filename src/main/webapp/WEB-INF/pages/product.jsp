@@ -100,19 +100,10 @@
           <section class="viewed ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
             <p class="viewed-title ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">Recently viewed
             </p>
-            <div class="viewed-panel">
+            <div class="viewed-panel ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
               <c:forEach var="viewedProduct" items="${viewedList.previouslyViewedProducts}">
-                <div class="viewed-tile">
-                  <div class="viewed-image">
-                    <img src="${viewedProduct.imageUrl}">
-                  </div>
-                  <div class="viewed-description">
-                    <a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">
-                      ${viewedProduct.description}</a>
-                    <fmt:formatNumber value="${viewedProduct.price}" type="currency"
-                      currencySymbol="${viewedProduct.currency.symbol}" />
-                  </div>
-                </div>
+               <tags:viewedTile imageUrl="${viewedProduct.imageUrl}" id="${viewedProduct.id}"
+                description="${viewedProduct.description}" price="${viewedProduct.price}" symbol="${viewedProduct.currency.symbol}" />
               </c:forEach>
             </div>
           </section>
