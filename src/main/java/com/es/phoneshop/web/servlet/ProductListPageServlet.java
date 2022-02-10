@@ -4,9 +4,8 @@ import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.enums.SortField;
 import com.es.phoneshop.dao.enums.SortOrder;
-import com.es.phoneshop.model.viewed.DefaultViewedListService;
-import com.es.phoneshop.model.viewed.ViewedList;
-import com.es.phoneshop.model.viewed.ViewedListService;
+import com.es.phoneshop.service.impl.DefaultViewedListService;
+import com.es.phoneshop.service.ViewedListService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

@@ -53,7 +53,7 @@
               <td>Quantity</td>
               <td>
                 <form method="post">
-                  <input class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
+                  <input type="number" class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
                   <c:if test="${not empty param.error}">
                     <span class="error">
                       ${param.error}
@@ -101,10 +101,7 @@
             <p class="viewed-title ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">Recently viewed
             </p>
             <div class="viewed-panel ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
-              <c:forEach var="viewedProduct" items="${viewedList.previouslyViewedProducts}">
-               <tags:viewedTile imageUrl="${viewedProduct.imageUrl}" id="${viewedProduct.id}"
-                description="${viewedProduct.description}" price="${viewedProduct.price}" symbol="${viewedProduct.currency.symbol}" />
-              </c:forEach>
+               <tags:viewedTile viewedProducts="${viewedList.previouslyViewedProducts}" />
             </div>
           </section>
           <a class="button-products" href="${pageContext.servletContext.contextPath}/products">

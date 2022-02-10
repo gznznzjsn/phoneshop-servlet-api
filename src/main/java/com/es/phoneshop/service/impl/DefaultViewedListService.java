@@ -1,16 +1,15 @@
-package com.es.phoneshop.model.viewed;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
-import com.es.phoneshop.model.cart.Cart;
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.viewed.ViewedList;
+import com.es.phoneshop.service.ViewedListService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
-public class DefaultViewedListService implements ViewedListService{
+public class DefaultViewedListService implements ViewedListService {
     private static final String VIEWED_SESSION_ATTRIBUTE = DefaultViewedListService.class.getName() + ".viewed";
 
     private final ProductDao productDao;

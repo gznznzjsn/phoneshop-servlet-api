@@ -46,10 +46,7 @@
           <section class="viewed ${viewedList.anyViewed eq true ? 'active' : ''}">
             <p class="viewed-title ${viewedList.anyViewed eq true ? 'active' : ''}">Recently viewed</p>
             <div class="viewed-panel">
-              <c:forEach var="viewedProduct" items="${viewedList.viewedProducts}">
-                <tags:viewedTile imageUrl="${viewedProduct.imageUrl}" id="${viewedProduct.id}"
-                                description="${viewedProduct.description}" price="${viewedProduct.price}" symbol="${viewedProduct.currency.symbol}" />
-              </c:forEach>
+                             <tags:viewedTile viewedProducts="${viewedList.viewedProducts}" />
             </div>
           </section>
         </tags:master>

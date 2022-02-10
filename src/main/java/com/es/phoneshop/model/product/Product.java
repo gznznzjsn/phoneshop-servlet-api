@@ -103,4 +103,23 @@ public class Product {
     public List<PriceHistoryBin> getPriceHistory(){
         return priceHistory;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this){
+            return true;
+        }
+        if(obj == null || obj.getClass() != this.getClass()){
+            return false;
+        }
+
+        Product product = (Product) obj;
+        return (id == product.getId() || (product.getId() != null && id.equals(product.getId()))) &&
+        (code == product.getCode() || (product.getCode() != null && code.equals(product.getCode()))) &&
+        (description == product.getDescription() || (product.getDescription() != null && description.equals(product.getDescription()))) &&
+        (price == product.getPrice() || (product.getPrice() != null && price.equals(product.getPrice()))) &&
+        (currency == product.getCurrency() || (product.getCurrency() != null && currency.equals(product.getCurrency()))) &&
+        (stock == product.getStock()) &&
+        (imageUrl == product.getImageUrl() || (product.getImageUrl() != null && imageUrl.equals(product.getImageUrl())));
+    }
 }

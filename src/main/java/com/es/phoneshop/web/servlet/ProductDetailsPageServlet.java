@@ -3,11 +3,11 @@ package com.es.phoneshop.web.servlet;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.model.viewed.DefaultViewedListService;
-import com.es.phoneshop.model.viewed.ViewedList;
-import com.es.phoneshop.model.viewed.ViewedListService;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.impl.DefaultCartService;
+import com.es.phoneshop.service.impl.DefaultViewedListService;
+import com.es.phoneshop.service.ViewedListService;
+import jdk.nashorn.internal.runtime.ParserException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -50,20 +50,23 @@ public class ProductDetailsPageServlet extends HttpServlet {
         int quantity;
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         try {
+            if(!quantityString.matches("[0-9]+")){
+                throw new NumberFormatException();
+            }
             quantity = format.parse(quantityString).intValue();
-        } catch (ParseException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + id + "?error=Not a number" +"&prevquantity=" + quantityString);
+        } catch (ParseException | NumberFormatException  e) {
+            response.sendRedirect(String.format("%s/products/%d?error=Incorrect quantity value&prevquantity=%s", request.getContextPath(), id, quantityString));
             return;
         }
         try {
             cartService.add(cartService.getCart(request), id, quantity);
         } catch (OutOfStockException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + id +
-                    "?error=Out of stock, available " + e.getStockAvailable() +"&prevquantity=" + quantityString);
+            response.sendRedirect(String.format("%s/products/%d?error=Out of stock, available %d&prevquantity=%s",
+                    request.getContextPath(), id, e.getStockAvailable(), quantityString));
             return;
         }
 
-        response.sendRedirect(request.getContextPath() + "/products/" + id + "?message=Product added to cart" +"&prevquantity=" + quantityString);
+        response.sendRedirect(String.format("%s/products/%d?message=Product added to cart&prevquantity=%s", request.getContextPath(), id, quantityString));
     }
 
     private Long parseProductId(HttpServletRequest request) {
