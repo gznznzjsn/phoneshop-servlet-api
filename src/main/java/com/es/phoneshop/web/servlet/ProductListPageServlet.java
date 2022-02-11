@@ -1,9 +1,11 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlet;
 
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.enums.SortField;
 import com.es.phoneshop.dao.enums.SortOrder;
+import com.es.phoneshop.service.impl.DefaultViewedListService;
+import com.es.phoneshop.service.ViewedListService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,11 +17,13 @@ import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao;
+    private ViewedListService viewedListService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
+        viewedListService = DefaultViewedListService.getInstance();
     }
 
     @Override
@@ -32,6 +36,8 @@ public class ProductListPageServlet extends HttpServlet {
                         Optional.ofNullable(sortField).map(SortField::valueOf).orElse(null),
                         Optional.ofNullable(sortOrder).map(SortOrder::valueOf).orElse(null)
                 ));
+        request.setAttribute("viewedList", viewedListService.getViewedList(request));
+
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

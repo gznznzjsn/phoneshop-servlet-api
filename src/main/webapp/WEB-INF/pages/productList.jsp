@@ -37,9 +37,16 @@
                   <a href="${pageContext.servletContext.contextPath}/products/${product.id}"> ${product.description}</a>
                 </td>
                 <td class="price">
-                  <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}" />
+                  <fmt:formatNumber value="${product.price}" type="currency"
+                    currencySymbol="${product.currency.symbol}" />
                 </td>
               </tr>
             </c:forEach>
           </table>
+          <section class="viewed ${viewedList.anyViewed eq true ? 'active' : ''}">
+            <p class="viewed-title ${viewedList.anyViewed eq true ? 'active' : ''}">Recently viewed</p>
+            <div class="viewed-panel">
+                             <tags:viewedTile viewedProducts="${viewedList.viewedProducts}" />
+            </div>
+          </section>
         </tags:master>

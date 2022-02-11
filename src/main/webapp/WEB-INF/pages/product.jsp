@@ -3,12 +3,24 @@
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-        <jsp:useBean id="product" type="com.es.phoneshop.model.Product" scope="request" />
+        <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request" />
         <tags:master pageTitle="Product Details">
+          <p>
+            ${cart}
+          </p>
+          <c:if test="${not empty param.message}">
+            <p class="success">
+              ${param.message}
+            </p>
+          </c:if>
+          <c:if test="${not empty param.error}">
+            <p class="error">
+              ${param.error}
+            </p>
+          </c:if>
           <p>
             ${product.description}
           </p>
-
           <table>
             <tr>
               <td>Image</td>
@@ -30,14 +42,29 @@
             </tr>
             <tr>
               <td>Price</td>
-              <td>
+              <td class="price">
                 <fmt:formatNumber value="${product.price}" type="currency"
                   currencySymbol="${product.currency.symbol}" />
                 <button class="history-button">price-history</button>
 
               </td>
             </tr>
+            <tr>
+              <td>Quantity</td>
+              <td>
+                <form method="post">
+                  <input type="number" class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
+                  <c:if test="${not empty param.error}">
+                    <span class="error">
+                      ${param.error}
+                    </span>
+                  </c:if>
+                  <button>Add to cart</button>
+                </form>
+              </td>
+            </tr>
           </table>
+
           <div class="history-background">
             <div class="price-history">
               <h2>Price History</h2>
@@ -68,7 +95,16 @@
                   </tr>
                 </c:forEach>
               </table>
-
             </div>
           </div>
+          <section class="viewed ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
+            <p class="viewed-title ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">Recently viewed
+            </p>
+            <div class="viewed-panel ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
+               <tags:viewedTile viewedProducts="${viewedList.previouslyViewedProducts}" />
+            </div>
+          </section>
+          <a class="button-products" href="${pageContext.servletContext.contextPath}/products">
+            <p>Back to products</p>
+          </a>
         </tags:master>
