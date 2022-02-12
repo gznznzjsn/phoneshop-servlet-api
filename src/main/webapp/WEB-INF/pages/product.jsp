@@ -107,4 +107,5 @@
           <a class="button-products" href="${pageContext.servletContext.contextPath}/products">
             <p>Back to products</p>
           </a>
+          <script src="${pageContext.servletContext.contextPath}/scripts/showHistory.js"></script>
         </tags:master>

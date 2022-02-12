@@ -11,6 +11,7 @@ import com.es.phoneshop.service.CartService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class DefaultCartService implements CartService {
@@ -65,6 +66,23 @@ public class DefaultCartService implements CartService {
                 checkStock(product, 0, quantity);
                 cart.getItems().add(new CartItem(product, quantity));
             }
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        synchronized (cart) {
+            Optional<CartItem> optional = cart.getItems()
+                    .stream()
+                    .filter(cartItem -> productId.equals(cartItem.getProduct().getId())).findAny();
+            Product product = optional
+                    .orElseThrow(() -> new ProductNotFoundException(productId, "No such id in the cart"))
+                    .getProduct();
+            checkStock(product, 0, quantity);
+            optional.get()
+                    .setQuantity(quantity);
+            recalculateCart(cart);
         }
     }
 
@@ -73,5 +91,25 @@ public class DefaultCartService implements CartService {
         if (product.getStock() < totalQuantity) {
             throw new OutOfStockException(product, quantity, product.getStock() - addedQuantity);
         }
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId) {
+        synchronized (cart) {
+            cart.getItems().removeIf(cartItem -> productId.equals(cartItem.getProduct().getId()));
+            recalculateCart(cart);
+        }
+    }
+
+    private void recalculateCart(Cart cart){
+        BigDecimal totalCost = cart.getItems().stream()
+                .map(CartItem::getProduct)
+                .map(Product::getPrice).
+                reduce(BigDecimal.ZERO,BigDecimal::add);
+        int totalQuantity = cart.getItems().stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+        cart.setTotalCost(totalCost);
+        cart.setTotalQuantity(totalQuantity);
     }
 }
