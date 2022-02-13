@@ -52,14 +52,20 @@
             <tr>
               <td>Quantity</td>
               <td>
-                <form method="post">
-                  <input type="number" class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
-                  <c:if test="${not empty param.error}">
-                    <span class="error">
-                      ${param.error}
-                    </span>
-                  </c:if>
+                <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
+                  <input class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
+
                   <button>Add to cart</button>
+                                           <c:if test="${not empty param.message}">
+                                             <p class="success">
+                                               ${param.message}
+                                             </p>
+                                           </c:if>
+                                 <c:if test="${not empty param.error}">
+                                   <p class="error">
+                                     ${param.error}
+                                   </p>
+                                 </c:if>
                 </form>
               </td>
             </tr>

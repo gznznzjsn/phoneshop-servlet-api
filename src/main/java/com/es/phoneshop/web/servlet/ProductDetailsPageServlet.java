@@ -47,29 +47,33 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long id = parseProductId(request);
         String quantityString = request.getParameter("quantity");
         int quantity;
-        NumberFormat format = NumberFormat.getInstance(request.getLocale());
         try {
             if(!quantityString.matches("[0-9]+")){
                 throw new NumberFormatException();
             }
+            NumberFormat format = NumberFormat.getInstance(request.getLocale());
             quantity = format.parse(quantityString).intValue();
-        } catch (ParseException | NumberFormatException  e) {
-            response.sendRedirect(String.format("%s/products/%d?error=Incorrect quantity value&prevquantity=%s", request.getContextPath(), id, quantityString));
-            return;
-        }
-        try {
             cartService.add(cartService.getCart(request), id, quantity);
-        } catch (OutOfStockException e) {
-            response.sendRedirect(String.format("%s/products/%d?error=Out of stock, available %d&prevquantity=%s",
-                    request.getContextPath(), id, e.getStockAvailable(), quantityString));
+        } catch (ParseException | NumberFormatException | OutOfStockException e) {
+            response.sendRedirect(String.format("%s/products/%d?error=%s&prevquantity=%s",
+                    request.getContextPath(), id, generateErrorMessage(e), quantityString));
             return;
         }
-
         response.sendRedirect(String.format("%s/products/%d?message=Product added to cart&prevquantity=%s", request.getContextPath(), id, quantityString));
     }
 
     private Long parseProductId(HttpServletRequest request) {
         String productId = request.getPathInfo().substring(1);
         return Long.valueOf(productId);
+    }
+
+    private String generateErrorMessage(Exception exception) {
+        if (exception instanceof NumberFormatException) {
+            return "Wrong format of number";
+        } else if (exception instanceof OutOfStockException) {
+            return "Out of stock, available " + ((OutOfStockException) exception).getStockAvailable();
+        } else {
+            return "Not a number";
+        }
     }
 }

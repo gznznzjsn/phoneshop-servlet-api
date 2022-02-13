@@ -51,18 +51,17 @@ public class DefaultCartService implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (cart) {
-            Product product = productDao.getProduct(productId);
             Optional<CartItem> sameItem = cart.getItems()
                     .stream()
-                    .filter(cartItem -> product.equals(cartItem.getProduct()))
+                    .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
                     .findAny();
             if (sameItem.isPresent()) {
                 int addedQuantity = sameItem.get().getQuantity();
                 int totalQuantity = quantity + addedQuantity;
-                checkStock(product, addedQuantity, quantity);
-                int sameItemId = cart.getItems().indexOf(sameItem.get());
-                cart.getItems().get(sameItemId).setQuantity(totalQuantity);
+                checkStock(sameItem.get().getProduct(), addedQuantity, quantity);
+                sameItem.get().setQuantity(totalQuantity);
             } else {
+                Product product = productDao.getProduct(productId);
                 checkStock(product, 0, quantity);
                 cart.getItems().add(new CartItem(product, quantity));
             }
@@ -73,6 +72,10 @@ public class DefaultCartService implements CartService {
     @Override
     public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (cart) {
+            if (quantity == 0) {
+                delete(cart, productId);
+                return;
+            }
             Optional<CartItem> optional = cart.getItems()
                     .stream()
                     .filter(cartItem -> productId.equals(cartItem.getProduct().getId())).findAny();
@@ -101,11 +104,10 @@ public class DefaultCartService implements CartService {
         }
     }
 
-    private void recalculateCart(Cart cart){
+    private void recalculateCart(Cart cart) {
         BigDecimal totalCost = cart.getItems().stream()
-                .map(CartItem::getProduct)
-                .map(Product::getPrice).
-                reduce(BigDecimal.ZERO,BigDecimal::add);
+                .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         int totalQuantity = cart.getItems().stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum();

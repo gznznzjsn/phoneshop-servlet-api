@@ -17,6 +17,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CartPageServlet extends HttpServlet {
     private CartService cartService;
@@ -41,19 +42,21 @@ public class CartPageServlet extends HttpServlet {
         String[] productIds = request.getParameterValues("productId");
         Map<Long, String> errors = new HashMap<>();
 
-        for (int i = 0; i < productIds.length; i++) {
+        int numberOfItems = productIds == null ? 0 : productIds.length;
+
+        for (int i = 0; i < numberOfItems; i++) {
             Long productId = Long.valueOf(productIds[i]);
             String quantityString = quantities[i];
             int quantity;
-            NumberFormat format = NumberFormat.getInstance(request.getLocale());
             try {
                 if (!quantityString.matches("[0-9]+")) {
                     throw new NumberFormatException();
                 }
+                NumberFormat format = NumberFormat.getInstance(request.getLocale());
                 quantity = format.parse(quantityString).intValue();
                 cartService.update(cartService.getCart(request), productId, quantity);
-            } catch (ParseException | NumberFormatException | OutOfStockException e) {
-                errors.put(productId, "Error during update");
+            } catch (NumberFormatException | ParseException | OutOfStockException e) {
+                errors.put(productId, generateErrorMessage(e));
             }
         }
         if (errors.isEmpty()) {
@@ -62,7 +65,16 @@ public class CartPageServlet extends HttpServlet {
             request.setAttribute("errors", errors);
             doGet(request, response);
         }
+    }
 
+    private String generateErrorMessage(Exception exception) {
+        if (exception instanceof NumberFormatException) {
+            return "Wrong format of number";
+        } else if (exception instanceof OutOfStockException) {
+            return "Out of stock, available " + ((OutOfStockException) exception).getStockAvailable();
+        } else {
+            return "Not a number";
+        }
     }
 
 }

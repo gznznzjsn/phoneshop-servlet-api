@@ -3,4 +3,5 @@
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-        Cart: ${cart.totalQuantity} items, ${cart.totalCost} dollars
+        <!-- <p>Cart: ${cart.totalQuantity} items, ${cart.totalCost} dollars</p> -->
+        <a class="cart" href="${pageContext.servletContext.contextPath}/cart"></a>
