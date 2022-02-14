@@ -1,7 +1,5 @@
 package com.es.phoneshop.model.viewed;
 
-import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 
 import java.util.ArrayList;
@@ -10,36 +8,36 @@ import java.util.List;
 public class ViewedList {
     public static final int CONST_MAX_SIZE = 3;
 
-    private List<Product> previouslyViewedProducts;
-    private List<Product> viewedProducts;
+    private List<Product> previousVersionList;
+    private List<Product> currentVersionList;
 
 
     public ViewedList() {
-        this.previouslyViewedProducts = new ArrayList<>();
-        this.viewedProducts = new ArrayList<>();
+        this.previousVersionList = new ArrayList<>();
+        this.currentVersionList = new ArrayList<>();
     }
 
-    public List<Product> getPreviouslyViewedProducts() {
-        return previouslyViewedProducts;
+    public List<Product> getPreviousVersionList() {
+        return previousVersionList;
     }
 
-    public List<Product> getViewedProducts() {
-        return viewedProducts;
+    public List<Product> getCurrentVersionList() {
+        return currentVersionList;
     }
 
-    public void setPreviouslyViewedProducts(List<Product> previouslyViewedProducts) {
-        this.previouslyViewedProducts = previouslyViewedProducts;
+    public void setPreviousVersionList(List<Product> previousVersionList) {
+        this.previousVersionList = previousVersionList;
     }
 
-    public void setViewedProducts(List<Product> viewedProducts) {
-        this.viewedProducts = viewedProducts;
+    public void setCurrentVersionList(List<Product> currentVersionList) {
+        this.currentVersionList = currentVersionList;
     }
 
-    public boolean isAnyPreviouslyViewed(){
-        return previouslyViewedProducts.size() != 0;
+    public boolean isAnyPreviousVersionList(){
+        return previousVersionList.size() != 0;
     }
 
-    public boolean isAnyViewed(){
-        return viewedProducts.size() != 0;
+    public boolean isAnyCurrentVersionList(){
+        return currentVersionList.size() != 0;
     }
 }

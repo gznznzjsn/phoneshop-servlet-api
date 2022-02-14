@@ -53,10 +53,10 @@
               </tr>
             </c:forEach>
           </table>
-          <section class="viewed ${viewedList.anyViewed eq true ? 'active' : ''}">
-            <p class="viewed-title ${viewedList.anyViewed eq true ? 'active' : ''}">Recently viewed</p>
+          <section class="viewed ${viewedList.anyCurrentVersionList eq true ? 'active' : ''}">
+            <p class="viewed-title">Recently viewed</p>
             <div class="viewed-panel">
-              <tags:viewedTile viewedProducts="${viewedList.viewedProducts}" />
+              <tags:viewedTile viewedProducts="${viewedList.currentVersionList}" />
             </div>
           </section>
         </tags:master>

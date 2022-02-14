@@ -103,11 +103,11 @@
               </table>
             </div>
           </div>
-          <section class="viewed ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
-            <p class="viewed-title ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">Recently viewed
+          <section class="viewed ${viewedList.anyPreviousVersionList eq true ? 'active' : ''}">
+            <p class="viewed-title">Recently viewed
             </p>
-            <div class="viewed-panel ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
-               <tags:viewedTile viewedProducts="${viewedList.previouslyViewedProducts}" />
+            <div class="viewed-panel">
+               <tags:viewedTile viewedProducts="${viewedList.previousVersionList}" />
             </div>
           </section>
           <a class="button-products" href="${pageContext.servletContext.contextPath}/products">
