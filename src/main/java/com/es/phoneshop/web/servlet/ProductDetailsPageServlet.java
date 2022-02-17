@@ -48,11 +48,15 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantityString = request.getParameter("quantity");
         int quantity;
         try {
-            if(!quantityString.matches("[0-9]+")){
+            if (!quantityString.matches("[0-9]+")) {
                 throw new NumberFormatException();
             }
             NumberFormat format = NumberFormat.getInstance(request.getLocale());
             quantity = format.parse(quantityString).intValue();
+            if (quantity == 0) {
+                response.sendRedirect(String.format("%s/products/%d?message=Inserted quantity = 0, nothing happened&prevquantity=%s", request.getContextPath(), id, quantityString));
+                return;
+            }
             cartService.add(cartService.getCart(request), id, quantity);
         } catch (ParseException | NumberFormatException | OutOfStockException e) {
             response.sendRedirect(String.format("%s/products/%d?error=%s&prevquantity=%s",

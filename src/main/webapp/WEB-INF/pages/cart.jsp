@@ -8,11 +8,6 @@
           <p>
             CART
           </p>
-          <p>
-            ${cart.totalCost}
-            <br>
-            ${cart.totalQuantity}
-          </p>
            <c:if test="${not empty param.message}">
              <p class="success">
                ${param.message}
@@ -69,9 +64,9 @@
                 </tr>
               </c:forEach>
             </table>
-            <p>
+                       <c:if test="${not empty cart.items}">
               <button>Update</button>
-            </p>
+              </c:if>
           </form>
           <form id="deleteCartItem" method="post"></form>
         </tags:master>

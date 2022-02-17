@@ -50,21 +50,23 @@ public class DefaultCartService implements CartService {
 
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        if (quantity == 0) {
+            return;
+        }
         synchronized (cart) {
             Optional<CartItem> sameItem = cart.getItems()
                     .stream()
                     .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
                     .findAny();
+            Product product = productDao.getProduct(productId);
             if (sameItem.isPresent()) {
-                int addedQuantity = sameItem.get().getQuantity();
-                int totalQuantity = quantity + addedQuantity;
-                checkStock(sameItem.get().getProduct(), addedQuantity, quantity);
-                sameItem.get().setQuantity(totalQuantity);
+                checkStock(sameItem.get().getProduct(), quantity);
+                sameItem.get().setQuantity(sameItem.get().getQuantity() + quantity);
             } else {
-                Product product = productDao.getProduct(productId);
-                checkStock(product, 0, quantity);
+                checkStock(product, quantity);
                 cart.getItems().add(new CartItem(product, quantity));
             }
+            product.setStock(product.getStock() - quantity);
             recalculateCart(cart);
         }
     }
@@ -76,29 +78,38 @@ public class DefaultCartService implements CartService {
                 delete(cart, productId);
                 return;
             }
-            Optional<CartItem> optional = cart.getItems()
+            Optional<CartItem> cartItemOptional = cart.getItems()
                     .stream()
                     .filter(cartItem -> productId.equals(cartItem.getProduct().getId())).findAny();
-            Product product = optional
+            Product product = cartItemOptional
                     .orElseThrow(() -> new ProductNotFoundException(productId, "No such id in the cart"))
                     .getProduct();
-            checkStock(product, 0, quantity);
-            optional.get()
+            checkStock(product, quantity);
+            Product productToUpdate = productDao.getProduct(productId);
+            productToUpdate.setStock(productToUpdate.getStock() + cartItemOptional.get()
+                    .getQuantity() - quantity);
+            cartItemOptional.get()
                     .setQuantity(quantity);
             recalculateCart(cart);
         }
     }
 
-    private void checkStock(Product product, int addedQuantity, int quantity) throws OutOfStockException {
-        int totalQuantity = quantity + addedQuantity;
-        if (product.getStock() < totalQuantity) {
-            throw new OutOfStockException(product, quantity, product.getStock() - addedQuantity);
+    private void checkStock(Product product, int quantity) throws OutOfStockException {
+        if (product.getStock() < quantity) {
+            throw new OutOfStockException(product, quantity, product.getStock());
         }
     }
 
     @Override
     public void delete(Cart cart, Long productId) {
         synchronized (cart) {
+            Product productToUpdate = productDao.getProduct(productId);
+            int quantity = cart.getItems().stream()
+                    .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
+                    .findAny()
+                    .orElseThrow(() -> new ProductNotFoundException(productId, "No such id in the cart"))
+                    .getQuantity();
+            productToUpdate.setStock(productToUpdate.getStock() + quantity);
             cart.getItems().removeIf(cartItem -> productId.equals(cartItem.getProduct().getId()));
             recalculateCart(cart);
         }
