@@ -21,6 +21,7 @@
                   <tags:sortLink sort="DESCRIPTION" order="ASC" />
                   <tags:sortLink sort="DESCRIPTION" order="DESC" />
                 </td>
+                <td class="quantity">Quantity</td>
                 <td class="price">
                   Price
                   <tags:sortLink sort="PRICE" order="ASC" />
@@ -36,17 +37,26 @@
                 <td>
                   <a href="${pageContext.servletContext.contextPath}/products/${product.id}"> ${product.description}</a>
                 </td>
+                <td>
+                  <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
+                    <input class="quantity" name="quantity"
+                      value="1">
+                </td>
                 <td class="price">
                   <fmt:formatNumber value="${product.price}" type="currency"
                     currencySymbol="${product.currency.symbol}" />
                 </td>
+                <td>
+                  <button>Add to cart</button>
+                </td>
+                </form>
               </tr>
             </c:forEach>
           </table>
-          <section class="viewed ${viewedList.anyViewed eq true ? 'active' : ''}">
-            <p class="viewed-title ${viewedList.anyViewed eq true ? 'active' : ''}">Recently viewed</p>
+          <section class="viewed ${viewedList.anyCurrentVersionList eq true ? 'active' : ''}">
+            <p class="viewed-title">Recently viewed</p>
             <div class="viewed-panel">
-                             <tags:viewedTile viewedProducts="${viewedList.viewedProducts}" />
+              <tags:viewedTile viewedProducts="${viewedList.currentVersionList}" />
             </div>
           </section>
         </tags:master>

@@ -52,14 +52,20 @@
             <tr>
               <td>Quantity</td>
               <td>
-                <form method="post">
-                  <input type="number" class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
-                  <c:if test="${not empty param.error}">
-                    <span class="error">
-                      ${param.error}
-                    </span>
-                  </c:if>
+                <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
+                  <input class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
+
                   <button>Add to cart</button>
+                                           <c:if test="${not empty param.message}">
+                                             <p class="success">
+                                               ${param.message}
+                                             </p>
+                                           </c:if>
+                                 <c:if test="${not empty param.error}">
+                                   <p class="error">
+                                     ${param.error}
+                                   </p>
+                                 </c:if>
                 </form>
               </td>
             </tr>
@@ -97,14 +103,15 @@
               </table>
             </div>
           </div>
-          <section class="viewed ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
-            <p class="viewed-title ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">Recently viewed
+          <section class="viewed ${viewedList.anyPreviousVersionList eq true ? 'active' : ''}">
+            <p class="viewed-title">Recently viewed
             </p>
-            <div class="viewed-panel ${viewedList.anyPreviouslyViewed eq true ? 'active' : ''}">
-               <tags:viewedTile viewedProducts="${viewedList.previouslyViewedProducts}" />
+            <div class="viewed-panel">
+               <tags:viewedTile viewedProducts="${viewedList.previousVersionList}" />
             </div>
           </section>
           <a class="button-products" href="${pageContext.servletContext.contextPath}/products">
             <p>Back to products</p>
           </a>
+          <script src="${pageContext.servletContext.contextPath}/scripts/showHistory.js"></script>
         </tags:master>

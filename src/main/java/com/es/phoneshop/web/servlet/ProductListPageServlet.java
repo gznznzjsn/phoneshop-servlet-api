@@ -4,6 +4,9 @@ import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.enums.SortField;
 import com.es.phoneshop.dao.enums.SortOrder;
+import com.es.phoneshop.exception.OutOfStockException;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.impl.DefaultCartService;
 import com.es.phoneshop.service.impl.DefaultViewedListService;
 import com.es.phoneshop.service.ViewedListService;
 
@@ -13,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
@@ -40,6 +45,4 @@ public class ProductListPageServlet extends HttpServlet {
 
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
-
-
 }

@@ -2,8 +2,9 @@
 <%@ attribute name="pageTitle" required="true" %>
 
 <header>
-    <a href="${pageContext.servletContext.contextPath}">
+    <a class="shop-title" href="${pageContext.servletContext.contextPath}">
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-      PhoneShop
+      <p>PhoneShop</p>
     </a>
+<jsp:include page="/cart/minicart"/>
   </header>

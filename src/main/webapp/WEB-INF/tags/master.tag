@@ -25,7 +25,7 @@
           </main>
           <tags:footer />
         </div>
-        <script src="${pageContext.servletContext.contextPath}/scripts/showHistory.js"></script>
+        <script src="${pageContext.servletContext.contextPath}/scripts/showMiniCart.js"></script>
       </body>
 
       </html>
