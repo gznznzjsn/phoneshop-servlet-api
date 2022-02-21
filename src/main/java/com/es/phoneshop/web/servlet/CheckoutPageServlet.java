@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -24,6 +26,7 @@ import java.util.function.Consumer;
 public class CheckoutPageServlet extends HttpServlet {
     private CartService cartService;
     private OrderService orderService;
+    private Order order;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -35,28 +38,30 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
-        request.setAttribute("order", orderService.getOrder(cart));
+        order = orderService.getOrder(cart);
+        request.setAttribute("order", order);
         request.setAttribute("paymentMethods", orderService.getPaymentMethods());
         request.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cart cart = cartService.getCart(request);
-        Order order = orderService.getOrder(cart);
         Map<String, String> errors = new HashMap<>();
 
         setRequiredParameter("firstName", request, errors, order::setFirstName);
         setRequiredParameter("lastName", request, errors, order::setLastName);
         setRequiredParameter("phone", request, errors, order::setPhone);
-        // setRequiredParameter("deliveryDate", request, errors, order::setDeliveryDate); должно быть сложнее
+         setRequiredParameter("deliveryDate", request, errors, value->{
+             LocalDate date = LocalDate.parse(value);
+             order.setDeliveryDate(date);
+         });
         setRequiredParameter("deliveryAddress", request, errors, order::setDeliveryAddress);
         setRequiredParameter("paymentMethod", request, errors, (value) -> order.setPaymentMethod(PaymentMethod.valueOf(value)));
 
         if (errors.isEmpty()) {
             orderService.placeOrder(order);
-//            response.sendRedirect(String.format("%s/checkout?message=Order sent successfully", request.getContextPath()));
-            response.sendRedirect(String.format("%s/order/overview/%d", request.getContextPath(), order.getId()));
+            cartService.clear(cartService.getCart(request));
+            response.sendRedirect(String.format("%s/order/overview/%s", request.getContextPath(), order.getSecureId()));
 
         } else {
             request.setAttribute("errors", errors);

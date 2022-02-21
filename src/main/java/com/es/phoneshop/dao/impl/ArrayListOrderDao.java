@@ -49,6 +49,21 @@ public class ArrayListOrderDao implements OrderDao {
         }
     }
 
+    @Override
+    public Order getOrderBySecureId(String secureId) throws OrderNotFoundException {
+        lock.readLock().lock();
+        try {
+            if (secureId == null) {
+                throw new OrderNotFoundException("Null secure id");
+            }
+            return orders.stream()
+                    .filter(order -> secureId.equals(order.getSecureId()))
+                    .findAny()
+                    .orElseThrow(() -> new OrderNotFoundException( secureId,"No order with this secure id"));
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
 
 
     @Override

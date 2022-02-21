@@ -11,10 +11,11 @@ import com.es.phoneshop.service.OrderService;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class DefaultOrderService implements OrderService {
-    private OrderDao orderDao;
+    private final OrderDao orderDao;
 
     private DefaultOrderService() {
         orderDao = ArrayListOrderDao.getInstance();
@@ -36,6 +37,7 @@ public class DefaultOrderService implements OrderService {
     @Override
     public Order getOrder(Cart cart) {
         Order order = new Order();
+        order.setCurrency(cart.getCurrency());
         order.setItems(cart.getItems().stream().map(cartItem -> {
             try {
                 return (CartItem) cartItem.clone();
@@ -60,6 +62,7 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     public void placeOrder(Order order) {
+        order.setSecureId(String.valueOf(UUID.randomUUID()));
         orderDao.save(order);
     }
 }

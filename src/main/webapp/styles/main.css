@@ -18,12 +18,12 @@ a{
 
 a:hover{
   transition: text-shadow 0.5s ease-in-out;
-  text-shadow: 0 0 10px aquamarine;
+  text-shadow: 0 0 10px rgb(115, 215, 0);
 }
 
 header {
   height: 100px;
-  background-color: aquamarine;
+  background-color: rgb(115, 215, 0);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -112,7 +112,7 @@ img.product-tile {
   visibility: hidden;
   width: 100%;
   margin-top: 100px;
-  background-color: aquamarine;
+  background-color: rgb(115, 215, 0);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -172,12 +172,12 @@ img.product-tile {
 .button-products{
   margin-top: 50px;
   width: 150px;
-  border: 5px solid aquamarine;
+  border: 5px solid rgb(115, 215, 0);
   display: flex;
   align-items: center;
   justify-content: center;
   display: block;
-  background-color: aquamarine;
+  background-color: rgb(115, 215, 0);
   color: #2b2b2b;
   border-radius: 20px;
 }
@@ -194,7 +194,7 @@ img.product-tile {
 }
 
 footer{
-  background-color: aquamarine;
+  background-color: rgb(115, 215, 0);
   display: flex;
   justify-content: center;
   margin-top: 50px;

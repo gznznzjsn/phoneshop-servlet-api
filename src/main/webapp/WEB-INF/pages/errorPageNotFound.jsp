@@ -3,5 +3,7 @@
 
 
     <tags:master pageTitle="Error">
-      <h1>Sorry, an error occured</h1>
+      <h1>Page not found, check the
+        <a style="color:blue" href="${pageContext.servletContext.contextPath}">home page</a>
+      </h1>
     </tags:master>

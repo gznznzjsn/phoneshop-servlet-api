@@ -114,6 +114,13 @@ public class DefaultCartService implements CartService {
         }
     }
 
+    @Override
+    public void clear(Cart cart) {
+        synchronized (cart) {
+            cart.getItems().clear();
+        }
+    }
+
     private void recalculateCart(Cart cart) {
         BigDecimal totalCost = cart.getItems().stream()
                 .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))

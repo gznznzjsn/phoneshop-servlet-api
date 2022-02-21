@@ -4,20 +4,11 @@
       <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
         <jsp:useBean id="order" type="com.es.phoneshop.model.order.Order" scope="request" />
-        <tags:master pageTitle="Checkout">
+        <tags:master pageTitle="Order overview">
           <p>
-            ORDER
+            ORDER OVERVIEW
           </p>
-          <c:if test="${not empty param.message}">
-            <p class="success">
-              ${param.message}
-            </p>
-          </c:if>
-          <c:if test="${not empty errors}">
-            <p class="error">
-              One or more errors occurred during placing order
-            </p>
-          </c:if>
+
           <table>
             <thead>
               <tr>
@@ -84,34 +75,32 @@
                   currencySymbol="${order.currency.symbol}" />
               </td>
             </tr>
-            <form action="${pageContext.servletContext.contextPath}/checkout" method="post">
           </table>
           <h2>Your Details</h2>
           <table>
-            <tags:orderFormRow name="firstName" label="First name" order="${order}" errors="${errors}" />
-            <tags:orderFormRow name="lastName" label="Last name" order="${order}" errors="${errors}" />
-            <tags:orderFormRow name="phone" label="Phone number" order="${order}" errors="${errors}" />
-            <tags:orderFormRow name="deliveryDate" label="Delivery date" order="${order}" errors="${errors}" />
-            <tags:orderFormRow name="deliveryAddress" label="Delivery address" order="${order}" errors="${errors}" />
             <tr>
-              <td>Payment method<span style="color:red">*</span></td>
-              <td>
-                <c:set var="error" value="${errors['paymentMethod']}" />
-                <select name="paymentMethod" id="">
-                  <option value=""></option>
-                  <c:forEach var="paymentMethod" items="${paymentMethods}">
-                    <option value="${paymentMethod}" ${param.paymentMethod eq paymentMethod ? 'selected' : '' }>
-                      ${paymentMethod}</option>
-                  </c:forEach>
-                </select>
-                <c:if test="${not empty error}">
-                  <p class="error">
-                    ${error}
-                  </p>
-                </c:if>
-              </td>
+              <td>First name</td>
+              <td>${order.firstName}</td>
+            </tr>
+            <tr>
+              <td>Last name</td>
+              <td>${order.lastName}</td>
+            </tr>
+            <tr>
+              <td>Phone number</td>
+              <td>${order.phone}</td>
+            </tr>
+            <tr>
+              <td>Delivery date</td>
+              <td>${order.deliveryDate}</td>
+            </tr>
+            <tr>
+              <td>Delivery address</td>
+              <td>${order.deliveryAddress}</td>
+            </tr>
+            <tr>
+              <td>Payment method</td>
+              <td>${order.paymentMethod}</td>
             </tr>
           </table>
-          <button>Place order</button>
-          </form>
         </tags:master>

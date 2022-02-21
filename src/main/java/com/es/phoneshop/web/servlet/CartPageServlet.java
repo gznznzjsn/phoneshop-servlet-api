@@ -42,9 +42,7 @@ public class CartPageServlet extends HttpServlet {
         String[] productIds = request.getParameterValues("productId");
         Map<Long, String> errors = new HashMap<>();
 
-        int numberOfItems = productIds == null ? 0 : productIds.length;
-
-        for (int i = 0; i < numberOfItems; i++) {
+        for (int i = 0; i < productIds.length; i++) {
             Long productId = Long.valueOf(productIds[i]);
             String quantityString = quantities[i];
             int quantity;

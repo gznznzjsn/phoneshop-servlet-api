@@ -8,10 +8,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 public class Order extends Cart {
+    private Currency currency;
     private Long id;
+    private String secureId;
     private BigDecimal subtotal;
     private BigDecimal deliveryCost;
 
@@ -24,6 +27,31 @@ public class Order extends Cart {
     private PaymentMethod paymentMethod;
 
 
+    @Override
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    @Override
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSecureId() {
+        return secureId;
+    }
+
+    public void setSecureId(String secureId) {
+        this.secureId = secureId;
+    }
 
     public BigDecimal getSubtotal() {
         return subtotal;
@@ -87,13 +115,5 @@ public class Order extends Cart {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
