@@ -6,13 +6,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultDosProtectionService implements DosProtectionService {
-    public static final long THRESHOLD = 100;
+    public static final long THRESHOLD = 10;
     private final Map<String, Long> countMap;
 
     private static DosProtectionService instance;
 
     private DefaultDosProtectionService() {
         this.countMap = new ConcurrentHashMap<>();
+        Thread mapUpdateThread = new Thread(new Thread(() -> {
+            while (true) {
+                try {
+                    countMap.clear();
+                    Thread.sleep( 20 * 1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("mapUpdateThread was interrupted");
+                }
+            }
+        }));
+        mapUpdateThread.start();
     }
 
     public static DosProtectionService getInstance() {
@@ -29,10 +40,10 @@ public class DefaultDosProtectionService implements DosProtectionService {
     @Override
     public boolean isAllowed(String ip) {
         Long count = countMap.get(ip);
-        if(count == null ){
+        if (count == null) {
             count = 1L;
         } else {
-            if(count>=THRESHOLD){
+            if (count >= THRESHOLD) {
                 return false;
             }
             count++;

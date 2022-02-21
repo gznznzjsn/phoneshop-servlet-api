@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.cart;
 
+import com.es.phoneshop.generic.DaoItem;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.ServletContextListener;
@@ -10,23 +11,16 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
-public class Cart implements Serializable {
-    private Currency currency = Currency.getInstance("USD");
+public class Cart extends DaoItem implements Serializable {
     private List<CartItem> items;
     private int totalQuantity;
     private BigDecimal totalCost;
 
     public Cart() {
+        setCurrency(Currency.getInstance("USD"));
         this.items = new ArrayList<>();
     }
 
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
 
     public List<CartItem> getItems() {
         return items;
