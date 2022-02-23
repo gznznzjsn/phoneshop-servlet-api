@@ -18,6 +18,11 @@
               ${param.error}
             </p>
           </c:if>
+          <c:if test="${not empty error}">
+            <p class="error">
+              ${error}
+            </p>
+          </c:if>
           <p>
             ${product.description}
           </p>
@@ -53,19 +58,26 @@
               <td>Quantity</td>
               <td>
                 <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
-                  <input class="quantity" name="quantity" value="${not empty param.prevquantity ? param.prevquantity : 1}">
+                  <input class="quantity" name="quantity"
+                    value="${ not empty param.prevquantity ? param.prevquantity : not empty quantity ? quantity :1 }">
 
                   <button>Add to cart</button>
-                                           <c:if test="${not empty param.message}">
-                                             <p class="success">
-                                               ${param.message}
-                                             </p>
-                                           </c:if>
-                                 <c:if test="${not empty param.error}">
-                                   <p class="error">
-                                     ${param.error}
-                                   </p>
-                                 </c:if>
+
+                  <c:if test="${not empty param.message}">
+                    <p class="success">
+                      ${param.message}
+                    </p>
+                  </c:if>
+                  <c:if test="${not empty error}">
+                    <p class="error">
+                      ${error}
+                    </p>
+                  </c:if>
+                  <c:if test="${not empty param.error}">
+                    <p class="error">
+                      ${param.error}
+                    </p>
+                  </c:if>
                 </form>
               </td>
             </tr>
@@ -107,7 +119,7 @@
             <p class="viewed-title">Recently viewed
             </p>
             <div class="viewed-panel">
-               <tags:viewedTile viewedProducts="${viewedList.previousVersionList}" />
+              <tags:viewedTile viewedProducts="${viewedList.previousVersionList}" />
             </div>
           </section>
           <a class="button-products" href="${pageContext.servletContext.contextPath}/products">

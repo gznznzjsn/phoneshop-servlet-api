@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultDosProtectionService implements DosProtectionService {
-    public static final long THRESHOLD = 10;
+    public static final long THRESHOLD = 100;
     private final Map<String, Long> countMap;
 
     private static DosProtectionService instance;

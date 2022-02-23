@@ -1,17 +1,14 @@
 package com.es.phoneshop.model.cart;
 
-import com.es.phoneshop.generic.DaoItem;
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.GenericDaoItem;
 
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
-public class Cart extends DaoItem implements Serializable {
+public class Cart extends GenericDaoItem implements Serializable {
     private List<CartItem> items;
     private int totalQuantity;
     private BigDecimal totalCost;

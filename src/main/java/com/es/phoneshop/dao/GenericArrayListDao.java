@@ -1,63 +1,48 @@
-package com.es.phoneshop.generic;
+package com.es.phoneshop.dao;
 
-import com.es.phoneshop.exception.OrderNotFoundException;
-import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.exception.ItemNotFoundException;
+import com.es.phoneshop.model.GenericDaoItem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class ArrayListDao<T extends DaoItem> {
-    public static final int PRODUCT = 0;
-    public static final int ORDER = 1;
+public abstract class GenericArrayListDao<T extends GenericDaoItem> {
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
     private long maxId;
     private final List<T> items;
 
-    public ArrayListDao() {
+    public GenericArrayListDao() {
         maxId = 0L;
         this.items = new ArrayList<>();
     }
 
-    public T get(Long id, int itemType) {
+    public T getItem(Long id) {
         lock.readLock().lock();
         try {
             if (id == null) {
-                if (itemType == ArrayListDao.PRODUCT) {
-                    throw new ProductNotFoundException("Null id");
-                } else if (itemType == ArrayListDao.ORDER) {
-                    throw new OrderNotFoundException("Null id");
-                } else {
-                    throw new IllegalArgumentException("Wrong value in itemType");
-                }
+                throw new IllegalArgumentException("id value is null");
             }
             return items.stream()
                     .filter(item -> id.equals(item.getId()))
                     .findAny()
-                    .orElseThrow(() -> {
-                        if (itemType == ArrayListDao.PRODUCT) {
-                            return new ProductNotFoundException(id, "No product with this id");
-                        } else if (itemType == ArrayListDao.ORDER) {
-                            return new OrderNotFoundException(id, "No order with this id");
-                        } else {
-                            return new IllegalArgumentException("Wrong value in itemType");
-                        }
-                    });
+                    .orElseThrow(() -> new ItemNotFoundException(id));
         } finally {
             lock.readLock().unlock();
         }
     }
 
 
-    public void save(T item, int itemType) throws OrderNotFoundException {
+    public void saveItem(T item){
         getLock().writeLock().lock();
         try {
             if (item.getId() == null) {
                 item.setId(++maxId);
                 items.add(item);
             } else {
-                int sameIdIndex = items.indexOf(get(item.getId(),itemType));
+                int sameIdIndex = items.indexOf(getItem(item.getId()));
                 items.set(sameIdIndex, item);
             }
         } finally {

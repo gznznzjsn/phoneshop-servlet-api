@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product;
 
-import com.es.phoneshop.generic.DaoItem;
+import com.es.phoneshop.model.GenericDaoItem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
-public class Product extends DaoItem implements Serializable {
+public class Product extends GenericDaoItem implements Serializable {
     private String code;
     private String description;
     private BigDecimal price;

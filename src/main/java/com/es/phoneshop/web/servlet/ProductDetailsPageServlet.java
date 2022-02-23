@@ -43,9 +43,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Long id = parseProductId(request);
         String quantityString = request.getParameter("quantity");
+        System.out.println(quantityString);
         int quantity;
         try {
             if (!quantityString.matches("[0-9]+")) {
@@ -59,8 +60,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
             }
             cartService.add(cartService.getCart(request), id, quantity);
         } catch (ParseException | NumberFormatException | OutOfStockException e) {
-            response.sendRedirect(String.format("%s/products/%d?error=%s&prevquantity=%s",
-                    request.getContextPath(), id, generateErrorMessage(e), quantityString));
+            request.setAttribute("error",generateErrorMessage(e));
+            request.setAttribute("quantity",quantityString);
+            doGet(request,response);
             return;
         }
         response.sendRedirect(String.format("%s/products/%d?message=Product added to cart&prevquantity=%s", request.getContextPath(), id, quantityString));

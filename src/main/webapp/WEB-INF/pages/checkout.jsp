@@ -97,8 +97,8 @@
               <td>Payment method<span style="color:red">*</span></td>
               <td>
                 <c:set var="error" value="${errors['paymentMethod']}" />
-                <select name="paymentMethod" id="">
-                  <option value=""></option>
+                <select name="paymentMethod">
+                  <option value="">Choose method</option>
                   <c:forEach var="paymentMethod" items="${paymentMethods}">
                     <option value="${paymentMethod}" ${param.paymentMethod eq paymentMethod ? 'selected' : '' }>
                       ${paymentMethod}</option>

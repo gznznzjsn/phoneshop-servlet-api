@@ -1,17 +1,18 @@
 package com.es.phoneshop.dao.impl;
 
+import com.es.phoneshop.dao.GenericArrayListDao;
 import com.es.phoneshop.dao.OrderDao;
+import com.es.phoneshop.exception.ItemNotFoundException;
 import com.es.phoneshop.exception.OrderNotFoundException;
-import com.es.phoneshop.generic.ArrayListDao;
 import com.es.phoneshop.model.order.Order;
 
-public class ArrayListOrderDao extends ArrayListDao<Order> implements OrderDao {
+public class ArrayListOrderDao extends GenericArrayListDao<Order> implements OrderDao {
     private static OrderDao instance;
 
     public static OrderDao getInstance() {
         if (instance == null) {
-            synchronized (ArrayListOrderDao.class){
-                if (instance == null){
+            synchronized (ArrayListOrderDao.class) {
+                if (instance == null) {
                     instance = new ArrayListOrderDao();
                 }
             }
@@ -24,23 +25,17 @@ public class ArrayListOrderDao extends ArrayListDao<Order> implements OrderDao {
         super();
     }
 
-
     @Override
-    public Order getOrder(Long id) throws OrderNotFoundException {
-        return get(id,ArrayListDao.ORDER);
-    }
-
-    @Override
-    public Order getOrderBySecureId(String secureId) throws OrderNotFoundException {
+    public Order getOrderBySecureId(String secureId) {
         getLock().readLock().lock();
         try {
             if (secureId == null) {
-                throw new OrderNotFoundException("Null secure id");
+                throw new IllegalArgumentException("Null secure id");
             }
             return getItems().stream()
                     .filter(order -> secureId.equals(order.getSecureId()))
                     .findAny()
-                    .orElseThrow(() -> new OrderNotFoundException( secureId,"No order with this secure id"));
+                    .orElseThrow(() -> new OrderNotFoundException(secureId, "No order with this secure id"));
         } finally {
             getLock().readLock().unlock();
         }
@@ -48,10 +43,13 @@ public class ArrayListOrderDao extends ArrayListDao<Order> implements OrderDao {
 
 
     @Override
-    public void save(Order order) throws OrderNotFoundException {
-        save(order,ArrayListDao.ORDER);
+    public void save(Order order){
+        try {
+            saveItem(order);
+        } catch (ItemNotFoundException ex) {
+            throw new OrderNotFoundException(ex.getId(), ex.getMessage());
+        }
     }
-
 
 
 }

@@ -39,8 +39,7 @@
                 </td>
                 <td>
                   <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
-                    <input class="quantity" name="quantity"
-                      value="1">
+                    <input class="quantity" name="quantity" value="1">
                 </td>
                 <td class="price">
                   <fmt:formatNumber value="${product.price}" type="currency"

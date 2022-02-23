@@ -1,10 +1,11 @@
 package com.es.phoneshop.dao.impl;
 
+import com.es.phoneshop.dao.GenericArrayListDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
+import com.es.phoneshop.exception.ItemNotFoundException;
 import com.es.phoneshop.exception.ProductNotFoundException;
-import com.es.phoneshop.generic.ArrayListDao;
 import com.es.phoneshop.model.product.Product;
 
 import java.util.Comparator;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao extends ArrayListDao<Product> implements ProductDao {
+public class ArrayListProductDao extends GenericArrayListDao<Product> implements ProductDao {
     private static ProductDao instance;
 
     public static ProductDao getInstance() {
@@ -29,7 +30,11 @@ public class ArrayListProductDao extends ArrayListDao<Product> implements Produc
 
     @Override
     public Product getProduct(Long id) {
-        return get(id, ArrayListDao.PRODUCT);
+        try {
+            return getItem(id);
+        } catch (ItemNotFoundException ex) {
+            throw new ProductNotFoundException(ex.getId(), ex.getMessage());
+        }
     }
 
     @Override
@@ -85,7 +90,11 @@ public class ArrayListProductDao extends ArrayListDao<Product> implements Produc
     }
 
     @Override
-    public void save(Product product) throws ProductNotFoundException {
-        save(product, ArrayListDao.PRODUCT);
+    public void save(Product product) {
+        try {
+            saveItem(product);
+        } catch (ItemNotFoundException ex) {
+            throw new ProductNotFoundException(ex.getId(), ex.getMessage());
+        }
     }
 }
