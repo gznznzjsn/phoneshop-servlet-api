@@ -1,9 +1,8 @@
 package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.model.viewed.ViewedList;
-import com.es.phoneshop.service.ViewedListService;
-import com.es.phoneshop.service.impl.DefaultViewedListService;
-import com.es.phoneshop.web.servlet.ProductListPageServlet;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.product.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +15,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class MiniCartServletTest {
     @Mock
     private HttpSession session;
     @Mock
@@ -34,27 +38,19 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
 
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
+    private final MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
+        when(request.getSession()).thenReturn(session);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
-
     @Test
-    public void testDoGet() throws ServletException, IOException {
-        when(request.getSession()).thenReturn(session);
-        servlet.doGet(request, response);
-
-        verify(request).getParameter("query");
-        verify(request).getParameter("sort");
-        verify(request).getParameter("order");
-
-        verify(request).setAttribute(eq("products"), anyList());
-        verify(request).setAttribute(eq("viewedList"), any(ViewedList.class));
-
-        verify(request).getRequestDispatcher(anyString());
-        verify(requestDispatcher).forward(request, response);
+    public void doGet() throws ServletException, IOException {
+        servlet.doGet(request,response);
+        verify(request).setAttribute(eq("cart"),any(Cart.class));
+        verify(request).getRequestDispatcher("/WEB-INF/pages/miniCart.jsp");
+        verify(requestDispatcher).include(request,response);
     }
 }

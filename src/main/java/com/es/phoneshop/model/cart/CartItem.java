@@ -30,6 +30,17 @@ public class CartItem implements Serializable, Cloneable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if( !obj.getClass().equals(CartItem.class)){
+            return false;
+        }
+        if(!this.product.equals(((CartItem) obj).product)){
+            return false;
+        }
+        return this.getQuantity()== ((CartItem) obj).getQuantity();
+    }
+
+    @Override
     public String toString() {
         return product.getCode() + " " + quantity;
     }

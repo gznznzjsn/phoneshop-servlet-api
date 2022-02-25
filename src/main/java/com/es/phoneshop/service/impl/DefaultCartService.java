@@ -118,6 +118,7 @@ public class DefaultCartService implements CartService {
     public void clear(Cart cart) {
         synchronized (cart) {
             cart.getItems().clear();
+            recalculateCart(cart);
         }
     }
 

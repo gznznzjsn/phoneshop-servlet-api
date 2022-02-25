@@ -37,7 +37,6 @@ public class DeleteCartItemServlet extends HttpServlet {
 
     private Long parseProductId(HttpServletRequest request) {
         String productId = request.getPathInfo().substring(1);
-        System.out.println(productId);
         return Long.valueOf(productId);
     }
 

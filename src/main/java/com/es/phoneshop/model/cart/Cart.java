@@ -16,6 +16,9 @@ public class Cart extends GenericDaoItem implements Serializable {
     public Cart() {
         setCurrency(Currency.getInstance("USD"));
         this.items = new ArrayList<>();
+        this.totalCost = BigDecimal.ZERO;
+        this.totalQuantity = 0;
+
     }
 
 
