@@ -110,26 +110,5 @@ public class DefaultViewedListServiceTest {
 
     }
 
-//    @Test
-//    public void testUpdatePresentItem() throws OutOfStockException {
-//        Cart cart = new Cart();
-//        cartService.add(cart, 1L, 1);
-//        assertEquals(1, cart.getItems().size());
-//        assertEquals(1, cart.getItems().get(0).getQuantity());
-//        cartService.update(cart, 1L, 2);
-//        assertEquals(1, cart.getItems().size());
-//        assertEquals(2, cart.getItems().get(0).getQuantity());
-//        assertEquals(BigDecimal.valueOf(10060),cart.getTotalCost());
-//        assertEquals(2,cart.getTotalQuantity());
-//    }
-//
-//    @Test
-//    public void testUpdateInvalidItem() throws OutOfStockException {
-//        Cart cart = new Cart();
-//        ex.expect(ProductNotFoundException.class);
-//        cartService.update(cart, 100L, 2);
-//        ex = ExpectedException.none();
-//    }
-
 
 }
