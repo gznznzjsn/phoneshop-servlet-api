@@ -1,20 +1,18 @@
 package com.es.phoneshop.model.product;
 
-import com.es.phoneshop.model.product.PriceHistoryBin;
+import com.es.phoneshop.model.GenericDaoItem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
 
-public class Product implements Serializable {
-    private Long id;
+public class Product extends GenericDaoItem implements Serializable {
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
     private BigDecimal price;
-    /** can be null if the price is null */
-    private Currency currency;
     private int stock;
     private String imageUrl;
 
@@ -24,12 +22,11 @@ public class Product implements Serializable {
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = id;
         this.code = code;
         this.description = description;
         priceHistory = new ArrayList<>();
         setPrice(price);
-        this.currency = currency;
+        setCurrency(currency);
         this.stock = stock;
         this.imageUrl = imageUrl;
     }
@@ -39,17 +36,9 @@ public class Product implements Serializable {
         this.description = description;
         priceHistory = new ArrayList<>();
         setPrice(price);
-        this.currency = currency;
+        setCurrency(currency);
         this.stock = stock;
         this.imageUrl = imageUrl;
-}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCode() {
@@ -74,16 +63,9 @@ public class Product implements Serializable {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-        priceHistory.add(new PriceHistoryBin(LocalDate.now(),this.price));
+        priceHistory.add(new PriceHistoryBin(LocalDate.now(), this.price));
     }
 
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
 
     public int getStock() {
         return stock;
@@ -101,26 +83,20 @@ public class Product implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public List<PriceHistoryBin> getPriceHistory(){
+    public List<PriceHistoryBin> getPriceHistory() {
         return priceHistory;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this){
-            return true;
-        }
-        if(obj == null || obj.getClass() != this.getClass()){
+        if(!super.equals(obj)){
             return false;
         }
-
         Product product = (Product) obj;
-        return (id == product.getId() || (product.getId() != null && id.equals(product.getId()))) &&
-        (code == product.getCode() || (product.getCode() != null && code.equals(product.getCode()))) &&
-        (description == product.getDescription() || (product.getDescription() != null && description.equals(product.getDescription()))) &&
-        (price == product.getPrice() || (product.getPrice() != null && price.equals(product.getPrice()))) &&
-        (currency == product.getCurrency() || (product.getCurrency() != null && currency.equals(product.getCurrency()))) &&
-        (stock == product.getStock()) &&
-        (imageUrl == product.getImageUrl() || (product.getImageUrl() != null && imageUrl.equals(product.getImageUrl())));
+        return (code == product.getCode() || (product.getCode() != null && code.equals(product.getCode()))) &&
+                (description == product.getDescription() || (product.getDescription() != null && description.equals(product.getDescription()))) &&
+                (price == product.getPrice() || (product.getPrice() != null && price.equals(product.getPrice()))) &&
+                (stock == product.getStock()) &&
+                (imageUrl == product.getImageUrl() || (product.getImageUrl() != null && imageUrl.equals(product.getImageUrl())));
     }
 }

@@ -1,11 +1,11 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.enums.SortField;
-import com.es.phoneshop.dao.enums.SortOrder;
+import com.es.phoneshop.enums.SortField;
+import com.es.phoneshop.enums.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -14,15 +14,18 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Currency;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArrayListProductDaoTest {
-    private ProductDao productDao;
-    private Currency usd;
+    private static ProductDao productDao;
 
     @Mock
     Product product;
@@ -30,8 +33,10 @@ public class ArrayListProductDaoTest {
     @Rule
     public ExpectedException ex = ExpectedException.none();
 
-    @Before
-    public void setup() {
+
+    @BeforeClass
+    public static void setup() {
+        Currency usd = Currency.getInstance("USD");
         productDao = ArrayListProductDao.getInstance();
         productDao.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         productDao.save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
@@ -46,83 +51,50 @@ public class ArrayListProductDaoTest {
         productDao.save(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         productDao.save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
         productDao.save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-
-        usd = Currency.getInstance("USD");
-
-        given(product.getId()).willReturn(100L);
-        given(product.getPrice()).willReturn(BigDecimal.valueOf(100));
-        given(product.getStock()).willReturn(1);
     }
 
-    @Test
-    public void testGetPresentProduct() throws ProductNotFoundException {
-        Product product = productDao.getProduct(13L);
-        assertEquals(13L, (long) product.getId());
-    }
 
-    @Test
-    public void testGetInvalidProduct() throws ProductNotFoundException {
-        ex.expect(ProductNotFoundException.class);
-        Product product = productDao.getProduct(14L);
-        ex = ExpectedException.none();
-        assertNull(product);
-    }
-
-    @Test
-    public void testGetProductWithNullId() throws ProductNotFoundException {
-        ex.expect(ProductNotFoundException.class);
-        Product product = productDao.getProduct(null);
-        ex = ExpectedException.none();
-        assertNull(product);
-    }
 
     @Test
     public void testFindProductsNoResults() {
         assertFalse(productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).isEmpty());
     }
 
-    @Test
-    public void testSaveProductWithoutId() throws ProductNotFoundException {
-        Product productWithoutId = new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        productDao.save(productWithoutId);
-
-        assertTrue(productWithoutId.getId() >= 0);
-        Product result = productDao.getProduct(productWithoutId.getId());
-        assertNotNull(result);
-        assertEquals("test-product", result.getCode());
-    }
 
     @Test
-    public void testSaveProductWithWrongId() throws ProductNotFoundException {
-        ex.expect(ProductNotFoundException.class);
+    public void testContainsAllWords() {
+        when(product.getDescription()).thenReturn("Samsung Galaxy 555");
+        when(product.getId()).thenReturn(null);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
+        when(product.getStock()).thenReturn(1);
         productDao.save(product);
-        Product pr = productDao.getProduct(product.getId());
-        ex = ExpectedException.none();
-        assertNull(pr);
+        assertTrue(productDao.findProducts("Sa G", SortField.DESCRIPTION, SortOrder.ASC).contains(product));
     }
 
     @Test
-    public void testUpdateProduct() throws ProductNotFoundException {
-        given(product.getId()).willReturn(5L);
-        given(product.getCode()).willReturn("test-code");
+    public void testDoesNotContainsAllWords() {
+        when(product.getDescription()).thenReturn("Galaxy");
+        when(product.getId()).thenReturn(null);
+        when(product.getPrice()).thenReturn(new BigDecimal(100));
+        when(product.getStock()).thenReturn(1);
         productDao.save(product);
-        assertEquals(productDao.getProduct(5L).getCode(), product.getCode());
+        assertFalse(productDao.findProducts("Sa G", SortField.DESCRIPTION, SortOrder.ASC).contains(product));
     }
 
     @Test
-    public void testDeletePresentProduct() throws ProductNotFoundException {
-        productDao.delete(13L);
-        ex.expect(ProductNotFoundException.class);
-        productDao.getProduct(13L);
-        ex = ExpectedException.none();
+    public void testComparatorOrder() {
+        assertEquals(productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).stream()
+                .sorted(Collections.reverseOrder(Comparator.comparing(Product::getDescription)))
+                .collect(Collectors.toList()), productDao.findProducts("", SortField.DESCRIPTION, SortOrder.DESC));
     }
 
     @Test
-    public void testDeleteInvalidProduct() throws ProductNotFoundException {
-        int prevSize = productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).size();
-        productDao.delete(100L);
-        int curSize = productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).size();
-        assertEquals(prevSize, curSize);
+    public void testComparatorNullSort() {
+        assertEquals(productDao.findProducts("S", null, null).stream()
+                .sorted(Comparator.comparing(product -> product.getDescription().split(" ").length))
+                .collect(Collectors.toList()), productDao.findProducts("S", null, null));
     }
+
+
 
 }

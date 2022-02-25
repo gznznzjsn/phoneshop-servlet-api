@@ -1,6 +1,5 @@
 package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.DefaultCartService;
 

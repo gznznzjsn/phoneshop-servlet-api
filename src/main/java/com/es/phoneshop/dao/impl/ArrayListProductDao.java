@@ -1,26 +1,25 @@
 package com.es.phoneshop.dao.impl;
 
+import com.es.phoneshop.dao.GenericArrayListDao;
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.enums.SortField;
-import com.es.phoneshop.dao.enums.SortOrder;
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.enums.SortField;
+import com.es.phoneshop.enums.SortOrder;
+import com.es.phoneshop.exception.ItemNotFoundException;
 import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.model.product.Product;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends GenericArrayListDao<Product> implements ProductDao {
     private static ProductDao instance;
 
     public static ProductDao getInstance() {
         if (instance == null) {
-            synchronized (ArrayListProductDao.class){
-                if (instance == null){
+            synchronized (ArrayListProductDao.class) {
+                if (instance == null) {
                     instance = new ArrayListProductDao();
                 }
             }
@@ -28,46 +27,30 @@ public class ArrayListProductDao implements ProductDao {
         return instance;
     }
 
-    private static final ReadWriteLock lock = new ReentrantReadWriteLock(true);
-    private long maxId;
-    private final List<Product> products;
-
-    private ArrayListProductDao() {
-        maxId = 0L;
-        this.products = new ArrayList<>();
-    }
-
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFoundException {
-        lock.readLock().lock();
+    public Product getProduct(Long id) {
         try {
-            if (id == null) {
-                throw new ProductNotFoundException("Null id");
-            }
-            return products.stream()
-                    .filter(product -> id.equals(product.getId()))
-                    .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException(id, "No product with this id"));
-        } finally {
-            lock.readLock().unlock();
+            return getItem(id);
+        } catch (ItemNotFoundException ex) {
+            throw new ProductNotFoundException(ex.getId(), ex.getMessage());
         }
     }
 
     @Override
     public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
-        lock.readLock().lock();
+        getLock().readLock().lock();
         try {
             String[] words = query == null ? new String[0] : query.split(" ");
 
-            return products.stream()
+            return getItems().stream()
                     .filter(product -> (query == null || query.isEmpty() || containsAllWords(product, words)))
                     .filter(this::isPriced)
                     .filter(this::isInStock)
                     .sorted(comparator(sortField, sortOrder))
                     .collect(Collectors.toList());
         } finally {
-            lock.readLock().unlock();
+            getLock().readLock().unlock();
         }
     }
 
@@ -89,7 +72,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     private Comparator<Product> comparator(SortField sortField, SortOrder sortOrder) {
-        if (sortField == null & sortOrder == null) {
+        if (sortField == null && sortOrder == null) {
             return Comparator.comparing(product -> product.getDescription().split(" ").length);
         }
 
@@ -107,33 +90,11 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) throws ProductNotFoundException {
-        lock.writeLock().lock();
+    public void save(Product product) {
         try {
-            if (product.getId() == null) {
-                product.setId(++maxId);
-                products.add(product);
-            } else {
-                int sameIdIndex = products.indexOf(getProduct(product.getId()));
-                products.set(sameIdIndex, product);
-            }
-        } finally {
-            lock.writeLock().unlock();
+            saveItem(product);
+        } catch (ItemNotFoundException ex) {
+            throw new ProductNotFoundException(ex.getId(), ex.getMessage());
         }
     }
-
-    @Override
-    public void delete(Long id) {
-        lock.writeLock().lock();
-        try {
-            products.removeIf(product -> product.getId().equals(id));
-            if (id == maxId) {
-                maxId = products.get(products.size() - 1).getId();
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-
 }

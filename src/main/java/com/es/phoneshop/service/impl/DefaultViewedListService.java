@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 public class DefaultViewedListService implements ViewedListService {
-    private static final String VIEWED_SESSION_ATTRIBUTE = DefaultViewedListService.class.getName() + ".viewed";
+    public static final String VIEWED_SESSION_ATTRIBUTE = DefaultViewedListService.class.getName() + ".viewed";
 
     private final ProductDao productDao;
 

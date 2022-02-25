@@ -84,12 +84,11 @@ public class DefaultCartService implements CartService {
             Product product = cartItemOptional
                     .orElseThrow(() -> new ProductNotFoundException(productId, "No such id in the cart"))
                     .getProduct();
-            checkStock(product, quantity);
-            Product productToUpdate = productDao.getProduct(productId);
-            productToUpdate.setStock(productToUpdate.getStock() + cartItemOptional.get()
-                    .getQuantity() - quantity);
-            cartItemOptional.get()
-                    .setQuantity(quantity);
+
+            int previousQuantity = cartItemOptional.get().getQuantity();
+            checkStock(product, quantity - previousQuantity);
+            product.setStock(product.getStock() + previousQuantity - quantity);
+            cartItemOptional.get().setQuantity(quantity);
             recalculateCart(cart);
         }
     }
@@ -111,6 +110,14 @@ public class DefaultCartService implements CartService {
                     .getQuantity();
             productToUpdate.setStock(productToUpdate.getStock() + quantity);
             cart.getItems().removeIf(cartItem -> productId.equals(cartItem.getProduct().getId()));
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void clear(Cart cart) {
+        synchronized (cart) {
+            cart.getItems().clear();
             recalculateCart(cart);
         }
     }

@@ -4,6 +4,7 @@ import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.impl.DefaultCartService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -25,7 +26,6 @@ public class DemoDataServletContextListener implements ServletContextListener {
         if (needDemoData) {
             saveSampleProducts();
         }
-
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
-import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.DefaultCartService;
 
@@ -17,7 +14,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class CartPageServlet extends HttpServlet {
     private CartService cartService;
@@ -42,9 +38,7 @@ public class CartPageServlet extends HttpServlet {
         String[] productIds = request.getParameterValues("productId");
         Map<Long, String> errors = new HashMap<>();
 
-        int numberOfItems = productIds == null ? 0 : productIds.length;
-
-        for (int i = 0; i < numberOfItems; i++) {
+        for (int i = 0; i < productIds.length; i++) {
             Long productId = Long.valueOf(productIds[i]);
             String quantityString = quantities[i];
             int quantity;
