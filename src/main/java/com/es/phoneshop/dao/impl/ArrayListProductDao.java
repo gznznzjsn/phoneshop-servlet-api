@@ -8,6 +8,7 @@ import com.es.phoneshop.exception.ItemNotFoundException;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -52,6 +53,24 @@ public class ArrayListProductDao extends GenericArrayListDao<Product> implements
         } finally {
             getLock().readLock().unlock();
         }
+    }
+
+    @Override
+    public List<Product> findAdvancedProducts(String productCode, BigDecimal minPrice, BigDecimal maxPrice, int minStock) {
+        getLock().readLock().lock();
+        try {
+            return getItems().stream()
+                    .filter(this::isPriced)
+                    .filter(this::isInStock)
+                    .filter(product -> product.getCode().contains(productCode))
+                    .filter(product -> product.getPrice().compareTo(minPrice)>=0)
+                    .filter(product -> product.getPrice().compareTo(maxPrice)<=0)
+                    .filter(product -> product.getStock() >= minStock)
+                    .collect(Collectors.toList());
+        } finally {
+            getLock().readLock().unlock();
+        }
+
     }
 
     private boolean containsAllWords(Product product, String[] words) {

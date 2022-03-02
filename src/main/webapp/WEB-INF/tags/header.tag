@@ -6,5 +6,5 @@
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
       <p>PhoneShop</p>
     </a>
-<jsp:include page="/cart/minicart"/>
+<jsp:include page="/cart/minicart" flush="true"/>
   </header>

@@ -8,6 +8,7 @@
           <p>
             Welcome to Expert-Soft training!
           </p>
+          <a href="${pageContext.servletContext.contextPath}/advanced-products?firstVisit=true">Advanced search</a>
           <form>
             <input name="query" value="${param.query}">
             <button>Search</button>
@@ -37,8 +38,8 @@
                 <td>
                   <a href="${pageContext.servletContext.contextPath}/products/${product.id}"> ${product.description}</a>
                 </td>
+                <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
                 <td>
-                  <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
                     <input class="quantity" name="quantity" value="1">
                 </td>
                 <td class="price">
